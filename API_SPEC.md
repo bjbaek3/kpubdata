@@ -1,0 +1,446 @@
+# Public API specification — KPubData
+
+## 1. Top-level API
+
+```python
+from kpubdata import Client
+```
+
+## 2. Client construction
+
+### Explicit construction
+
+```python
+client = Client(
+    provider_keys={
+        "datago": "...",
+        "seoul": "...",
+    },
+    timeout=10.0,
+    cache=True,
+    cache_ttl_seconds=3600,
+)
+```
+
+`Client(...)` supports these transport/cache options:
+
+- `timeout: float = 30.0`
+- `max_retries: int = 3`
+- `cache: bool | ResponseCache = False`
+  - `False`: disable cache (default)
+  - `True`: use default disk cache directory
+  - `ResponseCache(...)`: use a caller-supplied cache instance
+- `cache_ttl_seconds: int = 86400`
+- `env_keys: bool = True`
+  - `True`: a provider missing from `provider_keys` is looked up in the
+    environment (`KPUBDATA_<PROVIDER>_API_KEY`, then `<PROVIDER>_API_KEY`)
+  - `False`: explicit-keys-only — only `provider_keys` is used, for every call
+    (including `probe`), and no credential is read from the environment
+    (including `KPUBDATA_SGIS_CONSUMER_SECRET`). Use it when the client holds
+    someone else's key, so a missing entry is never filled with the operator's
+    key (#694)
+
+Any other keyword argument is a `TypeError` (#781): an option is applied or
+refused, never silently dropped.
+
+### Environment construction
+
+```python
+client = Client.from_env()
+```
+
+`Client.from_env()` additionally honors:
+
+- `KPUBDATA_CACHE=1`
+- `KPUBDATA_CACHE_DIR=/custom/cache/path`
+- `KPUBDATA_CACHE_TTL=3600`
+
+## 3. Discovery API
+
+```python
+client.datasets.list()
+client.datasets.list(provider="datago")
+client.datasets.search("예보")
+client.datasets.search("forecast", provider="datago")
+client.datasets.search("weathr", threshold=0.5)  # fuzzy match
+client.dataset("datago.apt_trade")
+```
+
+### Search behavior
+
+`search(text, *, provider=None, threshold=0.5)` scores each dataset against
+*text* using substring, token-overlap, and fuzzy matching across **name**,
+**description**, **tags**, **id**, **dataset_key**, and **provider**. Results are
+returned in descending relevance order.
+
+- **Exact substring** match in any field → score 1.0 (always included).
+- **Fuzzy match** via `difflib.SequenceMatcher` → included if score ≥ *threshold*.
+- **threshold** default is `0.5`.  Raise it (e.g. `0.8`) for stricter results,
+  lower it (e.g. `0.2`) for broader recall.
+
+Each `DatasetRef` returned by discovery exposes:
+- `id`, `provider`, `dataset_key`, `name`, `representation`, `operations`
+- `description`: human-readable summary (may be ``None``)
+- `tags`: categorization keywords as a tuple (e.g. ``("weather", "forecast")``)
+- `source_url`: link to original API documentation (may be ``None``)
+- `license`: the spec's `license` section as parsed (`LicenseSpec`), or ``None`` when the
+  dataset declares none. ``None`` means unknown, never "no restrictions" (#609)
+- `status`: a `DatasetStatus` — how far the dataset has been verified (#783):
+  `application_required` (the call is refused until an application is approved),
+  `fixture_verified` (tests pass on fixtures; no recorded live response),
+  `live_verified` (a recorded live response exists), and `in_progress`, `planned`,
+  `production`, `unstable`, `broken`, `retired`. It is what `SUPPORTED_DATA.md`
+  records, shipped with the package, not a live check — `Client.probe()` makes the
+  call. ``None`` means the table does not list the dataset (`datago.generic`, a
+  provider registered at run time): unknown, never "verified"
+- `verification`: a `VerificationLevel` — how far the dataset has been checked, alone
+  (#842). It stays `fixture_verified` while `status` is `application_required`. ``None``
+  for an unlisted or a retired dataset
+- `application_requirement`: an `ApplicationRequirement` — `required`, `not_required` or
+  `unknown` (#842). It says what is recorded: the catalogue's declared
+  `application.required`, then the `application.required` that
+  `dataset_metadata.json` records (a spec has no `application` field, #902), then a
+  recorded `application_required` level. `unknown` is not "none needed"
+
+`DatasetRef.to_dict()` returns the reference as a JSON-serialisable dict (#784): the
+fields above plus `query_support`, `request_parameters`, `application` and
+`verified_at`, with `status` as its string value. A spec dataset's `application` is the
+entry `dataset_metadata.json` records for it (#902). Every key is always present and
+``None`` means "nothing declared". The key list is in
+[`docs/compatibility.md`](./docs/compatibility.md) §3; `kpubdata datasets list
+--format json` and `datasets show --format json` print the same dict.
+
+### Spec definitions
+
+`find_spec(dataset_key, provider=None)` returns the `SpecDefinition` of a spec-served
+dataset, or ``None``; `discover_specs()` returns all of them. `SpecDefinition` is
+importable as `from kpubdata import SpecDefinition` (#913). It is a frozen dataclass.
+
+The compatibility promise covers only these attributes:
+
+- `id`, `provider`, `dataset_key`
+- `examples`: a tuple of examples, each with `name` and `params`
+- `pagination.type`
+- `endpoint.base_url`
+- `auth.type`
+
+Every other attribute of `SpecDefinition`, and of the objects nested in it, is **not
+covered** by the compatibility promise: it may be renamed, retyped or removed in any
+release. Nothing is added to the stable list until it is documented here.
+
+## 4. Bound dataset operations
+
+### List/query
+
+```python
+dataset = client.dataset("datago.apt_trade")
+result = dataset.list(LAWD_CD="11680", DEAL_YMD="202503")
+```
+
+`list()` returns exactly one page of results. When another page is available,
+the returned `RecordBatch.next_page` is set.
+
+### List all pages
+
+```python
+dataset = client.dataset("datago.apt_trade")
+for batch in dataset.list_all(LAWD_CD="11680", DEAL_YMD="202503"):
+    for item in batch.items:
+        print(item)
+```
+
+`list_all()` yields one `RecordBatch` per page and follows `next_page`
+automatically until pagination is exhausted. `page` and `page_size` are
+pagination controls, not filters: they are never sent as raw provider
+parameters. When more than `max_pages` pages (default 1000) would be needed,
+the pages fetched so far are yielded and then `InvalidRequestError` is raised.
+
+For spec-backed datasets, `list_all()` decides column casting across all pages
+at once, so it **buffers**: every page is fetched before the first batch is
+yielded.
+`page_size` is capped to the spec's `pagination.max_size`, as in `list()`. Each
+batch still carries its own page's `raw`, `meta["provenance"]`, `next_page` and
+`validation`; `meta["validation_total"]` holds the report for the whole result,
+which is the one that decided casting.
+
+On that path a fetched page waits in a temporary file, not in memory, so memory use
+follows the page size and not the size of the result (#789). If a page fails, the
+exception propagates and no batch is yielded — the pages fetched before it are
+discarded.
+
+`list_all(partial=True)` keeps them (#876). When a request after the first fails,
+the pages read before it are yielded — on the spec path, cast over those pages —
+and then `IncompleteListError` is raised. Its `pages` is how many were yielded, its
+`__cause__` is the failure, and the failure's `provider`, `status_code`,
+`provider_code` and `retryable` are copied onto it. A failure of the first request is
+raised as it is, since nothing was read. The other paths already yield each page as
+it arrives; `partial=True` gives them the same ending, so a caller tells a short
+listing from a complete one the same way on every path. `partial` must be a bool.
+
+The pages arrive before the exception, so consume the generator in a loop and catch
+around it. `list(dataset.list_all(partial=True))` loses them: the exception leaves
+`list()` before it returns anything.
+
+```python
+from kpubdata import IncompleteListError
+
+rows = []
+try:
+    for batch in dataset.list_all(partial=True):
+        rows.extend(batch.items)
+except IncompleteListError as error:
+    print(f"kept {error.pages} page(s); stopped by {error.__cause__!r}")
+```
+
+`IncompleteListError` covers a failed request only. A listing that stops at
+`max_pages`, or because the provider repeats a page, still ends with
+`InvalidRequestError` after the pages it read, with or without `partial`. Because
+`partial` is now an option of `list_all()`, it can no longer be sent as a provider
+filter of that name through `list_all()`.
+
+Dataset metadata may expose provider-specific pagination styles through
+`DatasetRef.query_support.pagination`, including `offset`, `cursor`, and
+index-window based `index` pagination.
+
+#### Query validation
+
+`list()` validates canonical query parameters and raises `InvalidRequestError` for invalid values before provider invocation:
+
+| Parameter | Accepted values |
+|---|---|
+| `page` | `None` or positive integer (`>= 1`) |
+| `page_size` | `None` or positive integer (`>= 1`) |
+| `cursor` | `None` or non-empty string |
+| `start_date`, `end_date` | `None` or non-empty string (provider-specific format) |
+| `fields`, `sort` | `None` or `list[str]` |
+
+Other kwargs are passed as provider-specific filters to the adapter. For example, `dataset.list(region="11", custom_param="value")` passes `{"region": "11", "custom_param": "value"}` as provider-specific filters.
+
+**Provider-specific rules** (enforced by adapters):
+- Required provider parameters (e.g., some datasets require `start_date`/`end_date`)
+- Provider-specific date formats (e.g., `YYYYMM` vs `YYYYMMDD`)
+- Provider-specific maximum page size
+
+### Schema
+
+```python
+schema = dataset.schema()
+```
+
+### Raw
+
+```python
+raw = dataset.call_raw(operation="list", LAWD_CD="11680", DEAL_YMD="202503")
+```
+
+## 4a. Reachability probe
+
+```python
+from kpubdata import PROBE_STATUSES, Client, ProbeResult
+
+client = Client(provider_keys={"datago": user_key}, env_keys=False)
+one: ProbeResult | None = client.probe("datago.apt_trade")
+every: list[ProbeResult] = client.probe_all(provider="datago")
+```
+
+- `Client.probe(dataset_id) -> ProbeResult | None` — at most one call per
+  dataset, classified into `PROBE_STATUSES` (the `ProbeStatus` vocabulary of
+  ADR 0005). It covers:
+  - every spec-defined dataset, called through its spec with the first
+    `examples[]` entry;
+  - the catalogue datasets (no spec) of the data.go.kr adapters `datago`,
+    `semas` and `localdata`, called through the adapter with one
+    `list` call of one record (`page=1`, `page_size=1`). These adapters share
+    data.go.kr's gateway, which refuses a key not activated for the service
+    with HTTP 403 (raised as `AuthError`), and its result-code table, so the
+    verdict means the same as a spec dataset's. A dataset that needs filters
+    is called without them; once the gateway lets the key through, the
+    service's answer to the missing filters reads `params_invalid`.
+
+  It returns `None` for every other id: an unknown one, a catalogue dataset
+  without a `list` operation (`datago.generic`), and the catalogue datasets of
+  every other provider, whose error codes are their own and would have to be
+  guessed onto this vocabulary.
+- `Client.probe_all(*, provider=None) -> list[ProbeResult]` — every
+  spec-defined dataset, or those of one provider. It does not enumerate
+  catalogue datasets; probe those one at a time with `probe`.
+- A failed call is the verdict, not an exception.
+- Probing uses its own fast-fail transport (15 s timeout, zero retries, no
+  cache), not the client's `timeout`, `max_retries` or `cache`.
+- When the dataset needs a key the client does not have, no call is made and
+  the status is `auth_unknown`.
+- `ProbeResult` is a frozen dataclass: `dataset_id`, `service_id` (the
+  data.go.kr service the activation request is made for), `status`,
+  `probed_at` (ISO 8601, UTC), `detail`, and the evidence fields the drift
+  step reads (docs/LIVE_PROBE.md): `http_status` (200 on success, the raised
+  error's status otherwise), `result_code` (the provider code read off the
+  raised error; `None` on success — a successful query does not parse the
+  envelope), `latency_ms` (the one call), `schema_hash` (a fingerprint of the
+  returned field names; `None` when the call failed or the page was empty)
+  and `classification` (the `DriftClassification` this outcome feeds the
+  dataset status machine; `None` when the outcome says nothing about the
+  upstream API). Each evidence field is `None` where it could not be
+  observed — never guessed. Configured keys never appear in `detail`, in log
+  records or in exception messages.
+
+## 5. Convenience aliases
+
+Optional convenience aliases may be added for common datasets, but only if they do not obscure the canonical dataset id.
+
+Example:
+
+```python
+client.apartment_trades.list(LAWD_CD="11680", DEAL_YMD="202503")
+```
+
+Rules:
+
+- convenience aliases are secondary
+- docs should always show the canonical `client.dataset(...)` path
+
+## 6. Return values
+
+### `list()`
+
+Returns `RecordBatch`.
+
+`RecordBatch.validation` is a `ValidationReport | None` (`None` when the adapter did
+not run field-level validation). A report holds `issues: tuple[FieldIssue, ...]` and
+exposes:
+
+| Member | Description |
+|---|---|
+| `ok` | `True` when there are no issues |
+| `issues_of(kind)` | Issues of one `IssueKind` (`"uncastable"`, `"missing"`, `"undeclared"`); raises `ValueError` for an unknown kind |
+| `to_dict()` | JSON-serialisable `{"ok": bool, "issues": [...]}` |
+
+Counts are taken on the value the cast sees, so numeric null markers (`""`, `"-"`)
+count as nulls. A page with no records produces an empty (ok) report.
+
+### `list_all()`
+
+Returns a generator of `RecordBatch` values, one per page.
+
+### `schema()`
+
+Returns `SchemaDescriptor | None`.
+
+`SchemaDescriptor.fields` contains `FieldDescriptor` objects. Each `FieldDescriptor` may carry a `constraints: FieldConstraints | None` with structured metadata:
+
+| Attribute | Type | Description |
+|---|---|---|
+| `max_length` | `int \| None` | Maximum character length |
+| `min_value` | `float \| None` | Minimum numeric value |
+| `max_value` | `float \| None` | Maximum numeric value |
+| `pattern` | `str \| None` | Regex pattern |
+| `allowed_values` | `tuple[str, ...] \| None` | Permitted values |
+| `format` | `str \| None` | Semantic format hint (e.g. `"YYYYMM"`) |
+
+### `call_raw()`
+
+Returns provider-native payload / response object.
+
+## 7. Public API promises
+
+KPubData promises stability for:
+
+- `Client`
+- `Client.from_env()`
+- `Client.probe()` / `Client.probe_all()`, `ProbeResult`, `PROBE_STATUSES`
+- dataset discovery methods
+- `find_spec()` / `discover_specs()` and the `SpecDefinition` they return (#913), limited to the attributes listed under *Spec definitions* below
+- `Dataset.list/list_all/schema/call_raw`
+- canonical model classes
+- canonical error types, each error's `code` and the keys of `to_dict()`
+- `SENSITIVE_PARAM_KEYS`: the parameter and header names kpubdata masks as credentials (casefolded, matched exactly). Names are only added
+
+### Errors
+
+Every error is a `PublicDataError` and carries `provider`, `dataset_id`, `operation`,
+`status_code`, `provider_code` and `retryable`. `to_dict()` returns those with `code`,
+`type` and `message` as a JSON-serialisable dict; `code` names the kind of failure and
+does not change with the message, so map on it rather than on the text.
+
+| Type | `code` | Raised for |
+| --- | --- | --- |
+| `AuthError` | `auth_error` | HTTP 401, a provider's 403, a provider auth result code |
+| `RateLimitError` | `rate_limited` | HTTP 429, a provider quota code |
+| `ServiceUnavailableError` | `service_unavailable` | HTTP 503 after retries, a provider outage code |
+| `TransportTimeoutError` | `transport_timeout` | the request timed out |
+| `TransportError` | `transport_error` | any other HTTP status or network failure |
+| `InvalidRequestError` | `invalid_request` | a query the library or the provider refuses |
+| `DatasetNotFoundError` | `dataset_not_found` | an unknown dataset id, or a service that is gone |
+| `ProviderResponseError` | `provider_response_error` | a response that breaks the provider's contract |
+| `ParseError` | `parse_error` | a body that cannot be decoded |
+| `ConfigError` | `config_error` | a missing key or invalid configuration |
+| `UnsupportedCapabilityError` | `unsupported_capability` | an operation the dataset does not have |
+| `ProviderNotRegisteredError` | `provider_not_registered` | a provider absent from the registry |
+| `CapabilityContractError` | `capability_contract_error` | an adapter whose declared and actual capabilities disagree |
+| `IncompleteListError` | `incomplete_list` | `list_all(partial=True)` stopped after yielding `pages` pages; `__cause__` is the failure |
+
+`RateLimitError`, `ServiceUnavailableError` and `TransportTimeoutError` are
+`TransportError`s; `AuthError` is not, so `except TransportError` does not catch a 401.
+
+KPubData does **not** promise stability for:
+
+- internal adapter helper functions
+- internal transport implementation details
+- provider-specific metadata layout beyond documented keys
+
+## 8. Anti-goals for the API surface
+
+Avoid turning the public API into:
+
+- copied endpoint names from providers
+- a giant generic `query()` with dozens of weakly-defined arguments
+- a mandatory dataframe API
+- a fake SQL-like language
+
+## 9. Suggested usage style
+
+Preferred:
+
+```python
+client.dataset("seoul.subway_realtime_arrival").list(station_name="강남")
+```
+
+Acceptable advanced usage:
+
+```python
+client.dataset("seoul.subway_realtime_arrival").call_raw(operation="list", stationNm="강남")
+```
+
+Discouraged as the main public entry point:
+
+```python
+client.call_provider_endpoint("seoul", "SearchSTNTimeTableByIDService", ...)
+```
+
+## 10. CLI
+
+설치 후에는 콘솔 스크립트 `kpubdata`를 사용할 수 있습니다.
+
+- 데이터셋 목록: `kpubdata datasets list`
+- 메타데이터 확인: `kpubdata datasets show <dataset_id>`
+- 정규화 조회: `kpubdata fetch <dataset_id> ...`
+- Raw 호출: `kpubdata raw <dataset_id> <operation> ...`
+
+상세 사용법, 출력 형식, 종료 코드, 환경 변수 연동은 [docs/cli.md](./docs/cli.md)를 참고하세요.
+
+---
+
+## 관련 문서
+
+### 이 저장소 내 문서
+| 문서 | 설명 |
+| :--- | :--- |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | 시스템 아키텍처 설계 |
+| [CANONICAL_MODEL.md](./CANONICAL_MODEL.md) | 표준 데이터 모델 정의 |
+| [PROVIDER_ADAPTER_CONTRACT.md](./PROVIDER_ADAPTER_CONTRACT.md) | 어댑터 구현 규약 |
+| [VALIDATION.md](./VALIDATION.md) | 아키텍처 타당성 검증 |
+
+### KPubData Product Family
+| 저장소 | 문서 | 설명 |
+| :--- | :--- | :--- |
+| [kpubdata-builder](https://github.com/kpubdata-lab/kpubdata-builder) | [API_CONTRACT.md](https://github.com/kpubdata-lab/kpubdata-builder/blob/main/API_CONTRACT.md) | Builder API 규약 |
+| [kpubdata-studio](https://github.com/kpubdata-lab/kpubdata-studio) | [API_CONTRACT.md](https://github.com/kpubdata-lab/kpubdata-studio/blob/main/API_CONTRACT.md) | Studio API 규약 |

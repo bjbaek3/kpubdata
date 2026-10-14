@@ -1,0 +1,5322 @@
+[
+  {
+    "dataset_key": "hospital",
+    "name": "병원 인허가 (Hospital Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "healthcare"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/hospitals",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "clinic",
+    "name": "의원 인허가 (Clinic Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "healthcare"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/clinics",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "pharmacy",
+    "name": "약국 인허가 (Pharmacy Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "healthcare"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/pharmacies",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "animal_hospital",
+    "name": "동물병원 인허가 (Animal Hospital Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "healthcare"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/animal_hospitals",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "optical_shop",
+    "name": "안경점 인허가 (Optical Shop Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "personal-care"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/optical_shops",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "public_bath",
+    "name": "목욕장 인허가 (Public Bath Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "personal-care"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/public_baths",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "laundry",
+    "name": "세탁소 인허가 (Laundry Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "personal-care"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/laundries",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "barber_shop",
+    "name": "이발소 인허가 (Barber Shop Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "personal-care"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/barber_shops",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "beauty_salon",
+    "name": "미용원 인허가 (Beauty Salon Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "personal-care"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/beauty_salons",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "pet_grooming",
+    "name": "반려동물미용 인허가 (Pet Grooming Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "animal"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/pet_grooming",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "dance_academy",
+    "name": "댄스학원 인허가 (Dance Academy Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/dance_academies",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "karaoke",
+    "name": "노래연습장 인허가 (Karaoke Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/karaoke_rooms",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "singing_bar",
+    "name": "유흥주점 인허가 (Singing Bar Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/singing_bars",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "billiard_hall",
+    "name": "당구장 인허가 (Billiard Hall Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/billiard_halls",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "performance_hall",
+    "name": "공연장 인허가 (Performance Hall Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/performance_halls",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "movie_theater",
+    "name": "영화관 인허가 (Movie Theater Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/movie_theaters",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "swimming_pool",
+    "name": "수영장 인허가 (Swimming Pool Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "sports"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/swimming_pools",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "fitness_center",
+    "name": "피트니스센터 인허가 (Fitness Center Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "sports"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/fitness_centers",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "ice_rink",
+    "name": "아이스링크 인허가 (Ice Rink Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "sports"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/ice_rinks",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "golf_course",
+    "name": "골프장 인허가 (Golf Course Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "sports"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/golf_courses",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "golf_practice_range",
+    "name": "골프연습장 인허가 (Golf Practice Range Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "sports"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/golf_practice_ranges",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "horse_riding",
+    "name": "승마장 인허가 (Horse Riding Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "sports"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/horse_riding",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "ski_resort",
+    "name": "스키장 인허가 (Ski Resort Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "sports"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/ski_resorts",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "affiliated_medical_institution",
+    "name": "부속의료기관 인허가 (Affiliated Medical Institution Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "healthcare"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/affiliated_medical_institutions",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "postpartum_care",
+    "name": "산후조리업 인허가 (Postpartum Care Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "healthcare"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/postpartum_care",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "dental_lab",
+    "name": "치과기공소 인허가 (Dental Lab Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "healthcare"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/dental_labs",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "animal_import",
+    "name": "동물수입업 인허가 (Animal Import Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "animal"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/animal_import",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "slaughterhouse",
+    "name": "도축업 인허가 (Slaughterhouse Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "livestock"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/slaughterhouses",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "hatchery",
+    "name": "부화업 인허가 (Hatchery Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "livestock"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/hatcheries",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "youth_game_provider",
+    "name": "청소년게임제공업 인허가 (Youth Game Provider Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/youth_game_providers",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "tourist_performance_hall",
+    "name": "관광공연장업 인허가 (Tourist Performance Hall Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/tourist_performance_halls",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "tourism_business",
+    "name": "관광사업자 인허가 (Tourism Business Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/tourism_businesses",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "general_amusement_facility",
+    "name": "일반유원시설업 인허가 (General Amusement Facility Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/general_amusement_facilities",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "comprehensive_amusement_facility",
+    "name": "종합유원시설업 인허가 (Comprehensive Amusement Facility Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/comprehensive_amusement_facilities",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "video_viewing_room",
+    "name": "비디오물감상실업 인허가 (Video Viewing Room Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/video_viewing_rooms",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "tourist_accommodation",
+    "name": "관광숙박업 인허가 (Tourist Accommodation Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/tourist_accommodations",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "tourist_pension",
+    "name": "관광펜션업 인허가 (Tourist Pension Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/tourist_pensions",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "online_music_service",
+    "name": "온라인음악서비스제공업 인허가 (Online Music Service Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/online_music_services",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "door_to_door_sales",
+    "name": "방문판매업 인허가 (Door To Door Sales Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "retail"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/door_to_door_sales",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "dance_hall",
+    "name": "무도장업 인허가 (Dance Hall Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/dance_halls",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "yacht_marina",
+    "name": "요트장업 인허가 (Yacht Marina Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/yacht_marinas",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "comprehensive_sports_facility",
+    "name": "종합체육시설업 인허가 (Comprehensive Sports Facility Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "sports"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/comprehensive_sports_facilities",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "food_vending_machine",
+    "name": "식품자동판매기영업 인허가 (Food Vending Machine Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "food"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/food_vending_machines",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "milk_collection",
+    "name": "집유업 인허가 (Milk Collection Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "milk"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/milk_collection",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "livestock_processing",
+    "name": "축산물가공업 인허가 (Livestock Processing Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "livestock"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/livestock_processing",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "livestock_storage",
+    "name": "축산물보관업 인허가 (Livestock Storage Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "livestock"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/livestock_storage",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "entertainment_bar",
+    "name": "유흥주점영업 인허가 (Entertainment Bar Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "tourism"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/entertainment_bars",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "tourist_restaurant",
+    "name": "관광식당 인허가 (Tourist Restaurant Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "food-service"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/tourist_restaurants",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "tourist_entertainment_restaurant",
+    "name": "관광유흥음식점업 인허가 (Tourist Entertainment Restaurant Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "food-service"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/tourist_entertainment_restaurants",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "log_production",
+    "name": "원목생산업 인허가 (Log Production Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "log"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/log_production",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "sawmill",
+    "name": "제재업 인허가 (Sawmill Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "sawmill"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/sawmills",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "high_pressure_gas",
+    "name": "고압가스업 인허가 (High Pressure Gas Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "energy"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/high_pressure_gas",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "groundwater_construction",
+    "name": "지하수시공업체 인허가 (Groundwater Construction Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "environment"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/groundwater_construction",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "water_tank_cleaning",
+    "name": "저수조청소업 인허가 (Water Tank Cleaning Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "construction"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/water_tank_cleaning",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "publisher",
+    "name": "출판사 인허가 (Publisher Permits)",
+    "tags": [
+      "permits",
+      "business",
+      "business"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/publishers",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  },
+  {
+    "dataset_key": "logistics_warehouse",
+    "name": "물류창고업체 인허가 (Logistics Warehouse Permits)",
+    "tags": [
+      "permits",
+      "local-government",
+      "logistics"
+    ],
+    "source_url": "https://www.data.go.kr",
+    "base_url": "http://apis.data.go.kr/1741000/logistics_warehouses",
+    "default_operation": "info",
+    "representation": "api_json",
+    "service_key_param": "serviceKey",
+    "format_param": "type",
+    "operations": [
+      "list",
+      "raw"
+    ],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 100
+    },
+    "fields": [
+      {
+        "name": "OPN_SVC_ID",
+        "title": "업종코드",
+        "type": "string"
+      },
+      {
+        "name": "OPN_ATMY_GRP_CD",
+        "title": "개방자치단체코드",
+        "type": "string"
+      },
+      {
+        "name": "MGT_NO",
+        "title": "관리번호",
+        "type": "string"
+      },
+      {
+        "name": "LCPMT_YMD",
+        "title": "인허가일자",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_CD",
+        "title": "영업상태코드",
+        "type": "string"
+      },
+      {
+        "name": "SALS_STTS_NM",
+        "title": "영업상태명",
+        "type": "string"
+      },
+      {
+        "name": "CLSBIZ_YMD",
+        "title": "폐업일자",
+        "type": "string"
+      },
+      {
+        "name": "SITE_TEL",
+        "title": "전화번호",
+        "type": "string"
+      },
+      {
+        "name": "STTUS_ADDR",
+        "title": "지번주소",
+        "type": "string"
+      },
+      {
+        "name": "ROAD_NM_ADDR",
+        "title": "도로명주소",
+        "type": "string"
+      },
+      {
+        "name": "BPLC_NM",
+        "title": "사업장명",
+        "type": "string"
+      },
+      {
+        "name": "BSNTPE_NM",
+        "title": "업태명",
+        "type": "string"
+      },
+      {
+        "name": "X_CRDNT",
+        "title": "X좌표(경도)",
+        "type": "string"
+      },
+      {
+        "name": "Y_CRDNT",
+        "title": "Y좌표(위도)",
+        "type": "string"
+      }
+    ]
+  }
+]

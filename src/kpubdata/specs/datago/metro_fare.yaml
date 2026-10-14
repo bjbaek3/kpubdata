@@ -1,0 +1,156 @@
+id: datago.metro_fare
+provider: datago
+title: 서울교통공사 실시간 운임정보 (Seoul Metro Real-time Fare)
+description: Seoul Metro real-time fare information by station pair
+source:
+  url: https://www.data.go.kr
+endpoint:
+  base_url: http://apis.data.go.kr/B553766/fare2
+  operation: getRltmFare2
+  method: GET
+  format_param:
+    name: _type
+    values:
+      json: json
+      xml: xml
+auth:
+  type: query_param
+  param_name: serviceKey
+  provider_key: datago
+params: []
+response:
+  format: json
+  envelope: datago_standard
+  items_path: response.body.items.item
+  total_count_path: response.body.totalCount
+  error:
+    style: header_result_code
+    code_path: response.header.resultCode
+    ok_values:
+    - '00'
+    - '000'
+    - 0
+pagination:
+  type: page_no_rows
+  page_param: pageNo
+  size_param: numOfRows
+  max_size: 1000
+fields:
+- name: addCrgExpln
+  type: string
+  title: 추가 요금 설명
+  semantic_kind: text
+- name: arvlStnCd
+  type: string
+  title: 도착역 코드
+  semantic_kind: code
+- name: arvlStnNm
+  type: string
+  title: 도착역명
+  semantic_kind: text
+- name: arvlStnNo
+  type: integer
+  title: 도착역 번호
+- name: childAddFare
+  type: integer
+  title: 어린이 추가 운임
+  unit: 원
+  semantic_kind: measure
+- name: childCardFare
+  type: integer
+  title: 어린이 교통카드 운임
+  unit: 원
+  semantic_kind: measure
+- name: childCashFare
+  type: integer
+  title: 어린이 현금 운임
+  unit: 원
+  semantic_kind: measure
+- name: childDscntFare
+  type: integer
+  title: 어린이 할인 운임
+  unit: 원
+  semantic_kind: measure
+- name: clmtcmpnCardGffYn
+  type: string
+  title: 기후동행카드 하차 가능 여부
+  semantic_kind: code
+- name: clmtcmpnCardTkcarYn
+  type: string
+  title: 기후동행카드 승차 가능 여부
+  semantic_kind: code
+- name: cmtkFare
+  type: integer
+  title: 정기권 운임
+  unit: 원
+  semantic_kind: measure
+- name: crtrYmd
+  type: integer
+  title: 기준일자
+- name: dptreStnCd
+  type: string
+  title: 출발역 코드
+  semantic_kind: code
+- name: dptreStnNm
+  type: string
+  title: 출발역명
+  semantic_kind: text
+- name: dptreStnNo
+  type: integer
+  title: 출발역 번호
+- name: gnrlAddFare
+  type: integer
+  title: 일반 추가 운임
+  unit: 원
+  semantic_kind: measure
+- name: gnrlCardFare
+  type: integer
+  title: 일반 교통카드 운임
+  unit: 원
+  semantic_kind: measure
+- name: gnrlCashFare
+  type: integer
+  title: 일반 현금 운임
+  unit: 원
+  semantic_kind: measure
+- name: gnrlDscntFare
+  type: integer
+  title: 일반 할인 운임
+  unit: 원
+  semantic_kind: measure
+- name: mvmnDstc
+  type: string
+  title: 이동 거리
+  unit: km
+- name: yungAddFare
+  type: integer
+  title: 청소년 추가 운임
+  unit: 원
+  semantic_kind: measure
+- name: yungCardFare
+  type: integer
+  title: 청소년 교통카드 운임
+  unit: 원
+  semantic_kind: measure
+- name: yungCashFare
+  type: integer
+  title: 청소년 현금 운임
+  unit: 원
+  semantic_kind: measure
+- name: yungDscntFare
+  type: integer
+  title: 청소년 할인 운임
+  unit: 원
+  semantic_kind: measure
+license:
+  type: "공공누리_1유형"
+  redistribution: allowed
+  note: "Terms not yet confirmed — fill from provider page (#524)"
+examples:
+- name: default
+  description: 필터 없음 첫 페이지
+  params: {}
+  page: 1
+  page_size: 10
+status: active
+last_verified: '2026-09-09'

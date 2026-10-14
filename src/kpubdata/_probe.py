@@ -1,0 +1,686 @@
+"""Reachability probe — classify every dataset with one key and build the
+activation-request list (#499).
+
+In the dataset-addition workflow, the **only step that needs a human is the
+data.go.kr activation request**. Yet which datasets await an application
+lived only in the free text of the ``SUPPORTED_DATA.md`` remarks column,
+so an agent learned about it via a 403 **after** already starting spec
+work — doing work that has to be undone.
+
+This module front-loads that verdict — one call per dataset, classified
+into the ``PROBE_STATUSES`` vocabulary, which is wider than the earlier
+four-way split: **failing to distinguish retirement from a transient
+outage makes a quota overrun read as retirement**, telling the user to
+give up on something they only needed to wait for (#514).
+
+The public surface is ``Client.probe`` / ``Client.probe_all`` together with
+``kpubdata.ProbeResult`` and ``kpubdata.PROBE_STATUSES`` (#694); this module is
+the implementation and stays private.
+
+It reuses the fast-fail transport settings of ``batch_record.py``
+(15s timeout, zero retries) — failing datasets must not slow the whole
+run, and here failure is a normal result.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import time
+import warnings
+from collections.abc import Callable, Mapping
+from dataclasses import asdict, dataclass
+from datetime import datetime, timezone
+from pathlib import Path
+from urllib.parse import urlsplit
+
+from kpubdata.config import KPubDataConfig
+from kpubdata.core import status as _status
+from kpubdata.core.capability import Operation
+from kpubdata.core.models import DatasetRef, Query, RecordBatch
+from kpubdata.core.protocol import ProviderAdapter
+from kpubdata.core.spec import SpecDefinition, discover_specs, find_spec
+from kpubdata.exceptions import (
+    AuthError,
+    DatasetNotFoundError,
+    InvalidRequestError,
+    ParseError,
+    PublicDataError,
+    RateLimitError,
+    ServiceUnavailableError,
+    TransportError,
+    TransportTimeoutError,
+)
+from kpubdata.transport.http import HttpTransport, TransportConfig
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_REPORT_PATH = REPO_ROOT / "docs" / "status" / "key-scope.json"
+
+#: Probe transport settings. Failure is a normal result here, so give up fast.
+PROBE_TIMEOUT_SECONDS = 15
+PROBE_RETRIES = 0
+
+#: Probe outcomes (#514). The earlier four-way split could not tell a retired
+#: dataset from a transient outage, so a quota overrun read as retirement --
+#: which told a user to give up on something they only needed to wait for.
+#:
+#: ``application_required`` also covers what would be "awaiting approval".
+#: data.go.kr returns the same access-denied code whether no application was ever
+#: made or one is pending, and no documented code distinguishes them, so inventing
+#: the distinction would mean guessing. Splitting them later needs a record of
+#: submitted applications, which does not exist yet.
+PROBE_STATUSES: tuple[str, ...] = tuple(status.value for status in _status.ProbeStatus)
+
+#: The values are plain strings in results and reports; ``core.status.ProbeStatus``
+#: is the enum that defines them (ADR 0005).
+ProbeStatus = str
+
+#: Providers whose catalogue datasets (no spec) the probe classifies through the
+#: adapter's own call: they share data.go.kr's gateway and result codes (#916).
+_DATAGO_FAMILY: frozenset[str] = frozenset({"datago", "semas", "localdata"})
+
+#: data.go.kr standard result codes, as mapped in ``core/executor.py``.
+#: ``raise_for_code`` already turns these into typed exceptions, so the codes are
+#: read off ``provider_code`` rather than re-deriving them from the body.
+_CODE_STATUS: Mapping[str, ProbeStatus] = {
+    "01": "temporarily_unavailable",
+    "02": "temporarily_unavailable",
+    "10": "params_invalid",
+    "12": "retired",  # NO_OPENAPI_SERVICE -- the service is not there
+    "20": "application_required",  # SERVICE_ACCESS_DENIED
+    "22": "rate_limited",  # quota exceeded -- reachable, so not an application matter
+    "30": "application_required",  # SERVICE_KEY_IS_NOT_REGISTERED
+    "31": "application_required",  # expired
+    "32": "auth_unknown",  # UNREGISTERED_IP -- the key is fine, the caller is not
+}
+
+
+@dataclass(frozen=True)
+class ProbeResult:
+    """Reachability verdict for a single dataset.
+
+    Public as ``kpubdata.ProbeResult`` and returned by ``Client.probe`` and
+    ``Client.probe_all`` (#694). ``status`` is one of ``PROBE_STATUSES``.
+    ``detail`` never carries a configured key.
+
+    The evidence fields (#625, docs/LIVE_PROBE.md) feed drift detection.
+    ``http_status`` and ``result_code`` are read off the raised error; a
+    successful query implies HTTP 200 but does not parse the envelope code,
+    so ``result_code`` stays ``None`` on success. ``latency_ms`` measures the
+    one call. ``schema_hash`` fingerprints the field names of the returned
+    page, so the drift step can see ``SCHEMA_CHANGED`` without re-deriving
+    it. Each field is ``None`` where it could not be observed.
+    """
+
+    dataset_id: str
+    service_id: str
+    status: ProbeStatus
+    probed_at: str
+    detail: str = ""
+    http_status: int | None = None
+    result_code: str | None = None
+    latency_ms: int | None = None
+    schema_hash: str | None = None
+    classification: _status.DriftClassification | None = None
+
+
+def _classification_of(status: ProbeStatus) -> _status.DriftClassification | None:
+    """The drift signal this probe outcome feeds the state machine with."""
+    try:
+        return _status.PROBE_TO_DRIFT.get(_status.ProbeStatus(status))
+    except ValueError:
+        return None
+
+
+def _schema_hash(items: list[dict[str, object]]) -> str | None:
+    """Fingerprint the field names of one page of records (docs/LIVE_PROBE.md).
+
+    The drift step compares consecutive hashes to see ``SCHEMA_CHANGED``; the
+    values are excluded on purpose — data changes every day, field names are
+    the contract. ``None`` for an empty page: there is no schema to
+    fingerprint, and reporting a hash would claim one.
+    """
+    if not items:
+        return None
+    fields = sorted({key for record in items for key in record})
+    digest = hashlib.sha256("\x1f".join(fields).encode("utf-8")).hexdigest()
+    return digest[:12]
+
+
+def _row_int(value: object) -> int | None:
+    """Rebuild an optional int from a report row, tolerating anything else."""
+    if isinstance(value, bool) or not isinstance(value, int):
+        return None
+    return value
+
+
+def _row_str(value: object) -> str | None:
+    """Rebuild an optional non-empty string from a report row."""
+    return value if isinstance(value, str) and value else None
+
+
+def _row_classification(value: object) -> _status.DriftClassification | None:
+    """Rebuild the classification from a report row; unknown names read as None.
+
+    A report older than the evidence fields has no classification at all, and
+    a hand-edited one can carry a name outside the vocabulary — guessing a
+    translation would invent a signal nobody measured.
+    """
+    if not isinstance(value, str) or not value:
+        return None
+    try:
+        return _status.DriftClassification(value)
+    except ValueError:
+        return None
+
+
+def service_id_of(spec: SpecDefinition) -> str:
+    """The data.go.kr service identifier this dataset belongs to.
+
+    It is the last path segment of ``base_url`` — the activation request is
+    granted **per service, not per dataset**. Applying for
+    ``ArpltnInforInqireSvc`` once, for example, unlocks the whole set of
+    air-quality datasets. Listing them per dataset would make it look like
+    three separate applications.
+    """
+    return _service_id_of_url(getattr(spec.endpoint, "base_url", "") or "")
+
+
+def _service_id_of_url(base_url: str) -> str:
+    """The last path segment of a data.go.kr ``base_url``: its service identifier."""
+    path = urlsplit(base_url).path.rstrip("/")
+    return path.rsplit("/", 1)[-1] if path else ""
+
+
+def classify(
+    error: BaseException | None, *, secrets: tuple[str, ...] = ()
+) -> tuple[ProbeStatus, str]:
+    """Map a call outcome onto one of ``PROBE_STATUSES``.
+
+    The provider result code is consulted first where there is one. ``executor``
+    already maps the data.go.kr table onto typed exceptions and records the code
+    on ``provider_code``, and the code carries more than the exception type does
+    -- a 403 can mean "not applied for" (30) or "your IP is not registered" (32),
+    and those need different advice.
+
+    Where no code is available the exception type decides. Subclass order matters:
+    ``RateLimitError`` and ``TransportTimeoutError`` both subclass
+    ``TransportError``, so checking the base first would bury them. A quota
+    overrun previously classified as retirement, which told a user to abandon
+    something they only had to wait for.
+
+    ``secrets`` are masked out of the message **before** it is truncated, so a
+    key cut in half at the truncation boundary cannot survive as a prefix (#694).
+    """
+    if error is None:
+        return "available", ""
+    detail = f"{type(error).__name__}: {_redact(str(error), secrets)[:120]}"
+
+    code = getattr(error, "provider_code", None)
+    if isinstance(code, str) and code.strip() in _CODE_STATUS:
+        return _CODE_STATUS[code.strip()], detail
+
+    # Narrowest first. RateLimitError and TransportTimeoutError are
+    # TransportError subclasses.
+    if isinstance(error, RateLimitError):
+        return "rate_limited", detail
+    if isinstance(error, TransportTimeoutError):
+        return "network_error", detail
+    if isinstance(error, AuthError):
+        if getattr(error, "status_code", None) == 401:
+            # A credential problem, not a missing application: the key itself was
+            # refused (#786 made HTTP 401 an AuthError).
+            return "auth_unknown", detail
+        return "application_required", detail
+    if isinstance(error, InvalidRequestError):
+        return "params_invalid", detail
+    if isinstance(error, DatasetNotFoundError):
+        return "retired", detail
+    if isinstance(error, ServiceUnavailableError):
+        return "temporarily_unavailable", detail
+    if isinstance(error, ParseError):
+        # The endpoint answered with something undecodable. That is not a
+        # reachability verdict, and calling it retired would be wrong.
+        return "insufficient_metadata", detail
+    if isinstance(error, TransportError):
+        status = getattr(error, "status_code", None)
+        if status == 403:
+            return "application_required", detail
+        if status == 400:
+            return "params_invalid", detail
+        if status == 401:
+            # A credential problem, not an outage. Falling through to
+            # temporarily_unavailable would tell the caller to retry, when what
+            # is needed is a different key.
+            return "auth_unknown", detail
+        if status == 429:
+            return "rate_limited", detail
+        if isinstance(status, int) and 500 <= status < 600:
+            return "temporarily_unavailable", detail
+        if status is None:
+            # No HTTP exchange completed: DNS, TLS, connection refused.
+            return "network_error", detail
+        return "temporarily_unavailable", detail
+    return "network_error", detail
+
+
+def _redact(text: str, secrets: tuple[str, ...]) -> str:
+    """Replace every form of every secret in ``text`` with ``[REDACTED]``.
+
+    The transport already masks credentials in the URLs it puts into exception
+    messages. This is the second line: a provider that echoes the key back in an
+    error body, or a message built somewhere the transport does not see, must
+    still not carry the key into ``ProbeResult.detail`` (#694).
+    """
+    from kpubdata.transport._sensitive import _secret_forms
+
+    for form in _secret_forms(secrets):
+        text = text.replace(form, "[REDACTED]")
+    return text
+
+
+def _configured_secrets(config: KPubDataConfig, provider: str | None) -> tuple[str, ...]:
+    """Every key value this probe could have sent."""
+    values = {value for value in config.provider_keys.values() if value}
+    if provider:
+        resolved = config.get_provider_key(provider)
+        if resolved:
+            values.add(resolved)
+    return tuple(values)
+
+
+def new_probe_transport() -> HttpTransport:
+    """A fast-fail transport: ``PROBE_TIMEOUT_SECONDS``, ``PROBE_RETRIES``, no cache.
+
+    A cache or retries would interfere with the question "is this reachable with
+    this key right now", and here failure is a normal result.
+    """
+    return HttpTransport(
+        config=TransportConfig(timeout=PROBE_TIMEOUT_SECONDS, max_retries=PROBE_RETRIES, cache=None)
+    )
+
+
+def _now() -> str:
+    return datetime.now(tz=timezone.utc).isoformat(timespec="seconds")
+
+
+def _missing_credential(spec: SpecDefinition, config: KPubDataConfig) -> str | None:
+    """The provider whose key is absent, or None when nothing is needed."""
+    if spec.auth.type == "none":
+        return None
+    provider = spec.auth.provider_key or spec.provider
+    # ``get_provider_key`` returns None rather than raising, so no guard is
+    # needed -- ``require_provider_key`` is the one that raises.
+    return None if config.get_provider_key(provider) else provider
+
+
+def probe_dataset(
+    dataset_id: str,
+    *,
+    config: KPubDataConfig | None = None,
+    transport: HttpTransport | None = None,
+) -> ProbeResult | None:
+    """Probe one dataset with a single call.
+
+    A spec dataset is called through the spec executor; a catalogue dataset of a
+    data.go.kr adapter through the adapter itself (#916). None for any other
+    dataset, which the probe cannot classify honestly.
+    """
+    spec = find_spec(dataset_id)
+    if spec is None:
+        return _probe_catalogue_dataset(dataset_id, config=config, transport=transport)
+
+    resolved_config = config or KPubDataConfig.from_env()
+
+    # Stop before calling when there is no key to call with. Sending a request
+    # that is certain to fail costs the provider a request against the quota and
+    # tells us nothing -- and it would come back as application_required, which
+    # is the wrong advice: nothing needs applying for, a key needs configuring.
+    missing = _missing_credential(spec, resolved_config)
+    if missing is not None:
+        return ProbeResult(
+            dataset_id=spec.id,
+            service_id=service_id_of(spec),
+            status="auth_unknown",
+            probed_at=_now(),
+            detail=f"no credential configured for provider {missing!r}",
+            classification=_classification_of("auth_unknown"),
+        )
+
+    owned = transport is None
+    resolved_transport = transport if transport is not None else new_probe_transport()
+    try:
+        return _call_and_classify(spec, resolved_config, resolved_transport)
+    finally:
+        if owned:
+            resolved_transport.close()
+
+
+def _call_and_classify(
+    spec: SpecDefinition, config: KPubDataConfig, transport: HttpTransport
+) -> ProbeResult:
+    """Make the one probe call and classify its outcome."""
+    from kpubdata.core.executor import SpecExecutor
+
+    executor = SpecExecutor(config=config, transport=transport)
+    example = spec.examples[0] if spec.examples else None
+    query = (
+        Query(filters=dict(example.params), page=example.page, page_size=example.page_size)
+        if example
+        else Query()
+    )
+
+    error: BaseException | None = None
+    batch: RecordBatch | None = None
+    started = time.perf_counter()
+    try:
+        batch = executor.query(spec, _ref_for(spec), query)
+    except PublicDataError as exc:
+        error = exc
+    except Exception as exc:  # noqa: BLE001 — the probe must classify every failure
+        error = exc
+    latency_ms = int((time.perf_counter() - started) * 1000)
+
+    provider = spec.auth.provider_key or spec.provider
+    return _verdict(
+        spec.id,
+        service_id_of(spec),
+        error=error,
+        batch=batch,
+        latency_ms=latency_ms,
+        secrets=_configured_secrets(config, provider),
+    )
+
+
+def _verdict(
+    dataset_id: str,
+    service_id: str,
+    *,
+    error: BaseException | None,
+    batch: RecordBatch | None,
+    latency_ms: int,
+    secrets: tuple[str, ...],
+) -> ProbeResult:
+    """Build the ``ProbeResult`` for one completed probe call."""
+    status, detail = classify(error, secrets=secrets)
+    http_status = 200 if error is None else getattr(error, "status_code", None)
+    result_code = None if error is None else getattr(error, "provider_code", None)
+    return ProbeResult(
+        dataset_id=dataset_id,
+        service_id=service_id,
+        status=status,
+        probed_at=_now(),
+        detail=detail,
+        http_status=http_status if isinstance(http_status, int) else None,
+        result_code=result_code if isinstance(result_code, str) and result_code else None,
+        latency_ms=latency_ms,
+        schema_hash=_schema_hash(batch.items) if error is None and batch is not None else None,
+        classification=_classification_of(status),
+    )
+
+
+def _datago_family_adapter(
+    provider: str, config: KPubDataConfig, transport: HttpTransport
+) -> ProviderAdapter | None:
+    """The catalogue adapter of a provider the probe can classify, or None.
+
+    Only the adapters that speak data.go.kr's contract qualify: the gateway's 403
+    for a key not activated for the service (raised as ``AuthError``) and the
+    result-code table ``_CODE_STATUS`` reads. Any other provider has its own
+    codes, and mapping them onto this vocabulary would be guessing (#916).
+    """
+    factory: Callable[..., ProviderAdapter]
+    if provider == "datago":
+        from kpubdata.providers.datago.adapter import DataGoAdapter
+
+        factory = DataGoAdapter
+    elif provider == "semas":
+        from kpubdata.providers.semas.adapter import SemasAdapter
+
+        factory = SemasAdapter
+    elif provider == "localdata":
+        from kpubdata.providers.localdata.adapter import LocaldataAdapter
+
+        factory = LocaldataAdapter
+    else:
+        return None
+    return factory(config=config, transport=transport)
+
+
+def _probe_catalogue_dataset(
+    dataset_id: str,
+    *,
+    config: KPubDataConfig | None,
+    transport: HttpTransport | None,
+) -> ProbeResult | None:
+    """Probe a catalogue dataset of a data.go.kr adapter with one one-record list call.
+
+    None when the provider is not a data.go.kr adapter, the key is not in its
+    catalogue, or the dataset has no ``list`` operation (``datago.generic`` is
+    raw-only, and its refusal would read as a verdict on a service never called).
+    """
+    provider, _, dataset_key = dataset_id.partition(".")
+    if provider not in _DATAGO_FAMILY or not dataset_key:
+        return None
+
+    resolved_config = config or KPubDataConfig.from_env()
+    owned = transport is None
+    resolved_transport = transport if transport is not None else new_probe_transport()
+    try:
+        adapter = _datago_family_adapter(provider, resolved_config, resolved_transport)
+        if adapter is None:
+            return None
+        try:
+            dataset = adapter.get_dataset(dataset_key)
+        except DatasetNotFoundError:
+            return None
+        if Operation.LIST not in dataset.operations:
+            return None
+
+        base_url = dataset.raw_metadata.get("base_url")
+        service_id = _service_id_of_url(base_url if isinstance(base_url, str) else "")
+        # semas and localdata fall back to the shared data.go.kr key.
+        if not (
+            resolved_config.get_provider_key(provider) or resolved_config.get_provider_key("datago")
+        ):
+            return ProbeResult(
+                dataset_id=dataset.id,
+                service_id=service_id,
+                status="auth_unknown",
+                probed_at=_now(),
+                detail=f"no credential configured for provider {provider!r}",
+                classification=_classification_of("auth_unknown"),
+            )
+
+        error: BaseException | None = None
+        batch: RecordBatch | None = None
+        started = time.perf_counter()
+        try:
+            with warnings.catch_warnings():
+                # A deprecated id still answers; the warning is for its users,
+                # and the probe is not one.
+                warnings.simplefilter("ignore", DeprecationWarning)
+                batch = adapter.query_records(dataset, Query(page=1, page_size=1))
+        except PublicDataError as exc:
+            error = exc
+        except Exception as exc:  # noqa: BLE001 — the probe must classify every failure
+            error = exc
+        latency_ms = int((time.perf_counter() - started) * 1000)
+
+        secrets = tuple(
+            set(_configured_secrets(resolved_config, provider))
+            | set(_configured_secrets(resolved_config, "datago"))
+        )
+        return _verdict(
+            dataset.id,
+            service_id,
+            error=error,
+            batch=batch,
+            latency_ms=latency_ms,
+            secrets=secrets,
+        )
+    finally:
+        if owned:
+            resolved_transport.close()
+
+
+def _ref_for(spec: SpecDefinition) -> DatasetRef:
+    """The minimal DatasetRef the executor requires."""
+    from kpubdata.core.models import DatasetRef
+    from kpubdata.core.representation import Representation
+
+    return DatasetRef(
+        id=spec.id,
+        provider=spec.provider,
+        dataset_key=spec.dataset_key,
+        name=getattr(spec, "title", None) or spec.id,
+        representation=Representation.API_JSON,
+    )
+
+
+def probe_all(
+    *,
+    provider: str | None = None,
+    dataset_id: str | None = None,
+    config: KPubDataConfig | None = None,
+    transport: HttpTransport | None = None,
+) -> list[ProbeResult]:
+    """Probe every dataset in scope.
+
+    One fast-fail transport is shared by the whole run and closed at the end,
+    unless the caller passed its own.
+    """
+    resolved_config = config or KPubDataConfig.from_env()
+    owned = transport is None
+    resolved_transport = transport if transport is not None else new_probe_transport()
+    try:
+        if dataset_id:
+            one = probe_dataset(dataset_id, config=resolved_config, transport=resolved_transport)
+            return [one] if one else []
+
+        results: list[ProbeResult] = []
+        for spec in discover_specs():
+            if provider and spec.provider != provider:
+                continue
+            one = probe_dataset(spec.id, config=resolved_config, transport=resolved_transport)
+            if one is not None:
+                results.append(one)
+        return results
+    finally:
+        if owned:
+            resolved_transport.close()
+
+
+def render_apply_report(results: list[ProbeResult]) -> str:
+    """The activation-request checklist. **Groups by service.**
+
+    Grouping is the point of this report — listing per dataset makes it
+    look like the same service must be applied for several times.
+    """
+    pending = [r for r in results if r.status == "application_required"]
+    if not pending:
+        return "# 활용신청 대기\n\n없습니다.\n"
+
+    groups: dict[str, list[ProbeResult]] = {}
+    for result in pending:
+        groups.setdefault(result.service_id, []).append(result)
+
+    lines = [
+        "# 활용신청 대기",
+        "",
+        f"서비스 {len(groups)}건을 신청하면 데이터셋 {len(pending)}종이 풀립니다.",
+        "",
+    ]
+    for service, items in sorted(groups.items()):
+        lines.append(f"## {service or '(서비스 식별 불가)'}")
+        lines.append("")
+        lines.append(
+            f"- 데이터셋 {len(items)}종: " + ", ".join(sorted(i.dataset_id for i in items))
+        )
+        lines.append("- 신청: https://www.data.go.kr/ 에서 위 서비스명을 검색해 활용신청")
+        lines.append("")
+    return "\n".join(lines)
+
+
+def merge_with_existing(results: list[ProbeResult], path: Path) -> list[ProbeResult]:
+    """Fold ``results`` into whatever the report already holds.
+
+    Probing one dataset with ``--dataset`` used to overwrite the report with a
+    single row, discarding every other verdict. The point of the report is the
+    whole picture, and rebuilding it means calling every provider again.
+
+    Rows for the same ``dataset_id`` are replaced by the new verdict; everything
+    else is kept.
+    """
+    existing: dict[str, ProbeResult] = {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        payload = None
+    rows = payload.get("results") if isinstance(payload, dict) else None
+    if isinstance(rows, list):
+        for row in rows:
+            if not isinstance(row, dict) or "dataset_id" not in row:
+                continue
+            status = str(row.get("status", ""))
+            if status not in PROBE_STATUSES:
+                # A report written by the previous implementation holds statuses
+                # like "ok" or "auth-403". Keeping them would produce a mixed
+                # report whose values are not in the vocabulary, and guessing a
+                # translation would invent a verdict nobody measured. Drop the
+                # row; the next full probe fills it in.
+                continue
+            try:
+                existing[str(row["dataset_id"])] = ProbeResult(
+                    dataset_id=str(row["dataset_id"]),
+                    service_id=str(row.get("service_id", "")),
+                    status=status,
+                    probed_at=str(row.get("probed_at", "")),
+                    detail=str(row.get("detail", "")),
+                    http_status=_row_int(row.get("http_status")),
+                    result_code=_row_str(row.get("result_code")),
+                    latency_ms=_row_int(row.get("latency_ms")),
+                    schema_hash=_row_str(row.get("schema_hash")),
+                    classification=_row_classification(row.get("classification")),
+                )
+            except (TypeError, ValueError):
+                continue
+    for result in results:
+        existing[result.dataset_id] = result
+    return sorted(existing.values(), key=lambda r: r.dataset_id)
+
+
+def write_report(
+    results: list[ProbeResult], path: Path = DEFAULT_REPORT_PATH, *, runner: str = "local"
+) -> Path:
+    """Write the report atomically.
+
+    A crash midway through a plain ``write_text`` leaves a truncated JSON file,
+    and the next run reads it as "no previous verdicts" -- so a partial write
+    silently erases the report it was extending. ``runner`` records who ran the
+    probe (docs/LIVE_PROBE.md names ``github-actions`` for the nightly run);
+    the drift step treats the header as provenance, not a signal.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "probed_at": _now(),
+        "runner": runner,
+        "results": [asdict(r) for r in sorted(results, key=lambda r: r.dataset_id)],
+    }
+    rendered = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
+    temporary = path.with_name(f"{path.name}.tmp")
+    try:
+        temporary.write_text(rendered, encoding="utf-8")
+        temporary.replace(path)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
+    return path
+
+
+def summarize(results: list[ProbeResult]) -> dict[str, int]:
+    """Counts per classification."""
+    counts: dict[str, int] = {}
+    for result in results:
+        counts[result.status] = counts.get(result.status, 0) + 1
+    return counts

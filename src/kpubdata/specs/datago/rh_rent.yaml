@@ -1,0 +1,141 @@
+id: datago.rh_rent
+provider: datago
+title: 연립다세대 전월세 실거래자료 (Row House Rent)
+description: MOLIT row house rent real transaction data
+source:
+  url: https://www.data.go.kr
+endpoint:
+  base_url: http://apis.data.go.kr/1613000/RTMSDataSvcRHRent
+  operation: getRTMSDataSvcRHRent
+  method: GET
+  format_param:
+    name: resultType
+    values:
+      json: json
+      xml: xml
+auth:
+  type: query_param
+  param_name: serviceKey
+  provider_key: datago
+params:
+- name: LAWD_CD
+  type: string
+  required: true
+  description: 지역코드 (5자리)
+  example: '11110'
+- name: DEAL_YMD
+  type: date_yyyymm
+  required: true
+  description: 거래연월 (YYYYMM)
+  example: '202401'
+response:
+  format: json
+  envelope: datago_standard
+  items_path: response.body.items.item
+  total_count_path: response.body.totalCount
+  error:
+    style: header_result_code
+    code_path: response.header.resultCode
+    ok_values:
+    - '00'
+    - '000'
+    - 0
+pagination:
+  type: page_no_rows
+  page_param: pageNo
+  size_param: numOfRows
+  max_size: 1000
+fields:
+- name: buildYear
+  type: integer
+  title: 건축년도
+  description: 건축연도
+- name: contractTerm
+  type: string
+  title: 계약기간
+  semantic_kind: period
+  description: 계약기간
+- name: contractType
+  type: string
+  title: 계약 구분
+  semantic_kind: code
+  description: 계약구분
+- name: dealDay
+  type: integer
+  title: 계약일
+  description: 거래일
+- name: dealMonth
+  type: integer
+  title: 계약월
+  description: 거래월
+- name: dealYear
+  type: integer
+  title: 계약년도
+  description: 거래연도
+- name: deposit
+  type: integer
+  title: 보증금
+  unit: 만원
+  semantic_kind: measure
+- name: excluUseAr
+  type: string
+  title: 전용면적
+  unit: ㎡
+  description: 전용면적
+- name: floor
+  type: integer
+  title: 층
+  semantic_kind: measure
+  description: 층
+- name: houseType
+  type: string
+  title: 주택 유형
+  semantic_kind: code
+- name: jibun
+  type: integer
+  title: 지번
+  description: 지번
+- name: mhouseNm
+  type: string
+  title: 연립다세대명
+  semantic_kind: text
+- name: monthlyRent
+  type: integer
+  title: 월세
+  unit: 만원
+  semantic_kind: measure
+- name: preDeposit
+  type: string
+  title: 종전 계약 보증금
+  unit: 만원
+- name: preMonthlyRent
+  type: string
+  title: 종전 계약 월세
+  unit: 만원
+- name: sggCd
+  type: integer
+  title: 시군구 코드
+  description: 시군구 코드
+- name: umdNm
+  type: string
+  title: 법정동명
+  semantic_kind: text
+  description: 법정동 이름
+- name: useRRRight
+  type: string
+  title: 갱신요구권 사용 여부
+  semantic_kind: code
+license:
+  type: "공공누리_1유형"
+  redistribution: allowed
+  note: "Terms not yet confirmed — fill from provider page (#524)"
+examples:
+- name: seoul_gangnam
+  description: 서울 강남구 2024-01
+  params:
+    LAWD_CD: '11110'
+    DEAL_YMD: '202401'
+  page: 1
+  page_size: 10
+status: active
+last_verified: '2026-09-09'

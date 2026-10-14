@@ -1,0 +1,97 @@
+id: datago.social_enterprise
+provider: datago
+title: 사회적기업 인증현황
+description: 고용노동부 사회적기업 인증현황. 사회적기업 육성법에 따라 인증받은 기업의 목록(기업명, 대표자, 인증번호, 업종, 소재지)을 조회한다. odcloud 계열 API.
+source:
+  url: https://www.odcloud.kr
+  verified_at: '2026-10-01'
+endpoint:
+  base_url: https://api.odcloud.kr/api/socialEnterpriseList/v1
+  operation: authCompanyList
+  method: GET
+auth:
+  type: query_param
+  param_name: serviceKey
+  provider_key: datago
+params: []
+response:
+  format: json
+  envelope: datago_standard
+  items_path: data
+  total_count_path: matchCount
+  error:
+    style: err_field
+pagination:
+  type: page_no_rows
+  page_param: page
+  size_param: perPage
+  max_size: 100
+fields:
+- name: addr
+  type: string
+  title: 주소
+  description: 소재지
+- name: baseD
+  type: string
+  title: 기준일
+  description: 기준일 (YYYY-MM-DD)
+- name: busiAreaNm
+  type: string
+  title: 사업 지역
+  description: 사업 지역
+- name: busiContV
+  type: string
+  title: 사업 내용
+  description: 사업 내용
+- name: busiFiledNm
+  type: string
+  title: 업종명
+  description: 업종명
+- name: ceoNmV
+  type: string
+  title: 대표자명
+  description: 대표자명
+- name: certiEvalResult
+  type: string
+  title: 인증 평가 결과
+  description: 인증 평가 결과
+- name: certiIssuD
+  type: string
+  title: 인증 발급일
+  description: 인증 발급일 (YYYY-MM-DD)
+- name: certiNumV
+  type: string
+  title: 인증 번호
+  description: 인증 번호
+  semantic_kind: code
+- name: entNmV
+  type: string
+  title: 기업명
+  description: 기업명
+- name: faxNo
+  type: string
+  title: 팩스번호
+  description: 팩스번호
+- name: homepageAddrV
+  type: string
+  title: 홈페이지 주소
+  description: 홈페이지 주소
+- name: telNo
+  type: string
+  title: 전화번호
+  description: 전화번호
+license:
+  redistribution: unknown
+  pii_columns:
+  - ceoNmV
+  - telNo
+  - faxNo
+  note: "Terms not yet confirmed - fill from the provider page (odcloud socialEnterpriseList, #524)"
+examples:
+- name: first_page
+  description: 인증 사회적기업 첫 페이지
+  params: {}
+  page: 1
+  page_size: 10
+status: active
+last_verified: "2026-10-01"

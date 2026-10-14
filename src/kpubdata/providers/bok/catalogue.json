@@ -1,0 +1,105 @@
+[
+  {
+    "dataset_key": "base_rate",
+    "name": "한국은행 기준금리 (BOK Base Rate)",
+    "base_url": "https://ecos.bok.or.kr/api/StatisticSearch",
+    "default_operation": "StatisticSearch",
+    "representation": "api_json",
+    "stat_code": "722Y001",
+    "item_code1": "0101000",
+    "description": "Bank of Korea base interest rate historical data",
+    "tags": ["finance", "interest-rate", "monetary-policy"],
+    "source_url": "https://ecos.bok.or.kr/api/StatisticSearch",
+    "operations": ["list", "raw"],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 1000
+    },
+    "fields": [
+      {"name": "TIME", "title": "기간", "type": "string", "constraints": {"format": "YYYYMM", "pattern": "^\\d{6}$"}},
+      {"name": "DATA_VALUE", "title": "기준금리", "type": "string"},
+      {"name": "UNIT_NAME", "title": "단위", "type": "string"},
+      {"name": "STAT_CODE", "title": "통계표코드", "type": "string", "constraints": {"pattern": "^[A-Z0-9]+$"}},
+      {"name": "ITEM_CODE1", "title": "항목코드", "type": "string"},
+      {"name": "ITEM_NAME1", "title": "항목명", "type": "string"}
+    ]
+  },
+  {
+    "dataset_key": "money_supply",
+    "name": "통화량(M2) 구 통계 (Money Supply M2, Legacy Series)",
+    "base_url": "https://ecos.bok.or.kr/api/StatisticSearch",
+    "default_operation": "StatisticSearch",
+    "representation": "api_json",
+    "stat_code": "101Y003",
+    "item_code1": "BBHS00",
+    "description": "Bank of Korea ECOS M2 money supply monthly data (legacy series, 198601-200409)",
+    "tags": ["finance", "money-supply", "monetary-aggregate"],
+    "source_url": "https://ecos.bok.or.kr/api/StatisticSearch",
+    "operations": ["list", "raw"],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 1000,
+      "frequency": ["M"]
+    },
+    "fields": [
+      {"name": "TIME", "title": "기간", "type": "string", "constraints": {"format": "YYYYMM", "pattern": "^\\d{6}$"}},
+      {"name": "DATA_VALUE", "title": "통화량(M2)", "type": "string"},
+      {"name": "UNIT_NAME", "title": "단위", "type": "string"},
+      {"name": "STAT_CODE", "title": "통계표코드", "type": "string", "constraints": {"pattern": "^[A-Z0-9]+$"}},
+      {"name": "ITEM_CODE1", "title": "항목코드", "type": "string"},
+      {"name": "ITEM_NAME1", "title": "항목명", "type": "string"}
+    ]
+  },
+  {
+    "dataset_key": "usd_krw",
+    "name": "원/달러 환율 매매기준율 (USD/KRW Exchange Rate)",
+    "base_url": "https://ecos.bok.or.kr/api/StatisticSearch",
+    "default_operation": "StatisticSearch",
+    "representation": "api_json",
+    "stat_code": "731Y003",
+    "item_code1": "0000003",
+    "description": "Bank of Korea ECOS USD/KRW exchange rate historical data",
+    "tags": ["finance", "exchange-rate", "fx"],
+    "source_url": "https://ecos.bok.or.kr/api/StatisticSearch",
+    "operations": ["list", "raw"],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 1000,
+      "frequency": ["D"]
+    },
+    "fields": [
+      {"name": "TIME", "title": "기간", "type": "string", "constraints": {"format": "YYYYMMDD", "pattern": "^\\d{8}$"}},
+      {"name": "DATA_VALUE", "title": "매매기준율", "type": "string"},
+      {"name": "UNIT_NAME", "title": "단위", "type": "string"},
+      {"name": "STAT_CODE", "title": "통계표코드", "type": "string", "constraints": {"pattern": "^[A-Z0-9]+$"}},
+      {"name": "ITEM_CODE1", "title": "항목코드", "type": "string"},
+      {"name": "ITEM_NAME1", "title": "항목명", "type": "string"}
+    ]
+  },
+  {
+    "dataset_key": "bond_yield_3y",
+    "name": "국고채 3년물 수익률 (Korea Treasury Bond 3Y Yield)",
+    "base_url": "https://ecos.bok.or.kr/api/StatisticSearch",
+    "default_operation": "StatisticSearch",
+    "representation": "api_json",
+    "stat_code": "817Y002",
+    "item_code1": "010200000",
+    "description": "Bank of Korea ECOS Korea Treasury Bond 3Y yield historical data",
+    "tags": ["finance", "interest-rate", "bond", "treasury"],
+    "source_url": "https://ecos.bok.or.kr/api/StatisticSearch",
+    "operations": ["list", "raw"],
+    "query_support": {
+      "pagination": "offset",
+      "max_page_size": 1000,
+      "frequency": ["D"]
+    },
+    "fields": [
+      {"name": "TIME", "title": "기간", "type": "string", "constraints": {"format": "YYYYMMDD", "pattern": "^\\d{8}$"}},
+      {"name": "DATA_VALUE", "title": "수익률", "type": "string"},
+      {"name": "UNIT_NAME", "title": "단위", "type": "string"},
+      {"name": "STAT_CODE", "title": "통계표코드", "type": "string", "constraints": {"pattern": "^[A-Z0-9]+$"}},
+      {"name": "ITEM_CODE1", "title": "항목코드", "type": "string"},
+      {"name": "ITEM_NAME1", "title": "항목명", "type": "string"}
+    ]
+  }
+]

@@ -1,0 +1,1285 @@
+# KPubData Product Family — Project Management & Review Policy
+
+> 적용 대상
+>
+> - `kpubdata`
+> - `kpubdata-builder`
+> - `kpubdata-studio`
+> - `kpubdata-watch`
+>
+> 목적
+>
+> 네 저장소를 독립 프로젝트가 아니라 하나의 제품군으로 관리한다.
+> Issue 수, PR 수, 테스트 수, 구현된 기능 수가 아니라
+> **검증되어 사용자에게 전달할 수 있는 제품 가치**를 진척으로 본다.
+>
+> 핵심 관리 구조:
+>
+> `Epic → Issue → PR → Review → Verification → Release`
+>
+> Milestone은 사용하지 않는다.
+> ROADMAP과 README는 작업 진행상태 데이터베이스로 사용하지 않는다.
+
+---
+
+# 0. 문서 위치와 우선순위
+
+- 이 문서의 정본은 `kpubdata/docs/governance/POLICY.md` 하나다.
+- 네 저장소의 `AGENTS.md`, `CONTRIBUTING.md`는 이 문서를 링크하고, 여기와 충돌하는 규칙을 두지 않는다.
+- 충돌이 생기면 이 문서가 우선한다.
+- 저장소별 문서에는 해당 저장소 고유의 절차(빌드 명령, 디렉터리 규칙)만 남긴다.
+- 이 문서를 바꾸는 변경은 작성자가 아닌 사람의 승인이 필요한 변경(R3, 25절)으로 취급한다.
+
+<a id="writing-codes"></a>
+
+## 0.1 작성 규칙 — 뜻을 먼저, 코드는 괄호로 — 2026-10-08 추가
+
+리뷰 수준(R0~R3)과 검증 수준(V0~V5)은 내부 코드다. 프로젝트 밖 사람은 `V2` 만 보고
+뜻을 알 수 없고, 쓰는 사람도 틀린다 — 2026-10-08 새 이슈 4건이 단위 테스트를 `V2` 로
+적었다(정의상 단위 테스트는 V1, V2 는 replay·계약 테스트). 그래서(#878):
+
+- **뜻을 먼저 쓰고, 코드는 괄호에 넣는다.** "단위 테스트(V1)", "작성자가 아닌 사람의
+  승인이 필요(R3)". 영어로는 "unit tests (V1)", "an approval from someone other than
+  the author (R3)".
+- 코드만 쓰고 싶으면 [아래 용어표](#codes)로 링크한다: `[R3](POLICY.md#codes)`.
+- 라벨·체크·스크립트 이름(`review:R3`, `R3 review`, `scripts/r3_review.py`)은 이름이다.
+  바꾸지 않고 코드 서식(backtick)으로 쓴다.
+- 검사는 `scripts/check_plain_codes.py` 가 한다(CI `Lint & Type Check` 작업). `git ls-files` 가 주는
+  모든 Markdown 과 `.github/ISSUE_TEMPLATE/` 이슈 양식을 본다. 코드 서식·코드 블록 안,
+  `<!-- plain-codes: off -->` 와 `<!-- plain-codes: on -->` 사이(아래 용어표와 18·18.1절의
+  정의 표)는 보지 않는다. `CHANGELOG.md` 는 `## [Unreleased]` 절만 본다 — 지난 릴리스
+  절은 기록이라 고치지 않는다.
+- 절 번호 참조("POLICY 14.1")는 이 규칙의 범위가 아니다.
+
+<a id="codes"></a>
+
+## 0.2 코드 용어표
+
+<!-- plain-codes: off -->
+| 코드 | 뜻 | 정의 |
+|---|---|---|
+| R0 | 리뷰 수준 0 — 오타·링크·포맷·생성 파일. 가장 가벼운 확인 | 18.1절 |
+| R1 | 리뷰 수준 1 — 일반 버그 수정·작은 기능 | 18.1절 |
+| R2 | 리뷰 수준 2 — public API·spec·데이터 변환을 바꾸는 변경 | 18.1절 |
+| R3 | 리뷰 수준 3 — BYOK·인증·캐시 격리, 게시 정책·개인정보, 워크플로·CI 근거, 릴리스. **작성자가 아닌 사람의 승인이 있어야 머지된다** | 18.1절, 14.1절 |
+| V0 | 정적 검사 — lint, 타입 검사, 스키마 검증 | 18절 |
+| V1 | 단위 테스트 | 18절 |
+| V2 | replay·계약 테스트 — 녹화한 fixture 로 돌린다 | 18절 |
+| V3 | 구성요소 통합 테스트 — 실제 구성요소끼리 붙여 본다 | 18절 |
+| V4 | 실제 provider API 호출 검증 — 국내 runner 와 CI secret 이 필요 | 18절 |
+| V5-replay | 제품 E2E(replay) — Studio → Builder → kpubdata 를 replay provider 로 | 18절 |
+| V5-live | 제품 E2E(실제) — Studio → Builder → kpubdata 를 실제 provider 로 | 18절 |
+<!-- plain-codes: on -->
+
+---
+
+# 1. 프로젝트 관리 원칙
+
+## 1.1 One Product, Multiple Repositories
+
+| Repository | 책임 |
+|---|---|
+| `kpubdata` | Provider / Data Access / Spec / Validation |
+| `kpubdata-builder` | Build / Transform / Policy / Publish |
+| `kpubdata-studio` | User Experience / Onboarding |
+| `kpubdata-watch` | Public Data Reliability / 관측 · Public Status |
+| Cross-repo | 실제 제품 사용자 여정 |
+
+저장소별로 최적화하지 않는다.
+
+예를 들어 `kpubdata`의 변경이 자체 테스트를 모두 통과해도
+Builder를 깨뜨린다면 제품 관점에서는 완료가 아니다.
+
+## 1.2 제품 원칙
+
+1. **BYOK**: 모든 데이터 호출은 요청한 사용자 본인의 키로 한다.
+2. **키 비저장**: 키는 요청·작업이 도는 동안 메모리에만 두고 영속 저장하지 않는다.
+   적용 범위는 실행 형태에 따라 다르다.
+
+   | 실행 형태 | 키 출처 | 원칙 |
+   |---|---|---|
+   | kpubdata 라이브러리·CLI (사용자 자신의 프로세스) | 사용자 환경변수, 인자 | **유지.** 그 자체가 BYOK 다 |
+   | builder self-hosted 단일 사용자 | 운영자 = 사용자 | 환경변수 허용 여부를 결정한다 |
+   | builder 다중 사용자 (self-hosted OIDC, hosted) | 요청마다 사용자 입력 | 영속 저장 금지, 운영자 키 폴백 금지 |
+3. **키 풀링 금지**: 운영자 키, 다른 사용자 키, 공유 캐시로 대신 호출하지 않는다.
+4. **약관 우선**: 내보내기는 데이터셋 단위 정책 판정을 통과해야 한다.
+5. **증거 기반 지원**: Stable(34절)에만 호환성을 약속한다.
+
+
+## 1.3 안정화 전용 개발 모드 — 2026-10-12
+
+**상태: 적용 중.** 이 절은 `kpubdata`, `kpubdata-builder`, `kpubdata-studio`
+세 저장소의 **현재 제품 범위를 동결**한다. `kpubdata-watch`에는 자동 적용하지 않는다.
+기준은 각각 2026-10-12 착수 당시 `main`의 `590110cd`, `8bedc648`, `8aa85cf1`이다.
+동결은 달력 날짜나 다음 릴리스만으로 끝나지 않는다. 메인테이너가 검증 근거를 확인하고
+이 정책의 변경을 별도 PR로 승인할 때만 해제한다(작성자가 아닌 사람의 승인 필요(R3)).
+
+**성공의 기준은 기능·Issue·PR의 수가 아니라 기존 사용자 여정의 안정성과 검증 증거다.**
+현재 없는 기능을 새로 만드는 것, 새로운 외부 의존성이나 상시 운영 책임을 만드는 것은
+기본적으로 시작하지 않는다. 백로그에 이슈가 존재하거나 ADR이 제안됐다는 사실만으로
+이미 승인된 현재 제품 범위라고 해석하지 않는다. 열려 있는 확장 이슈는 삭제하지 않고
+후속 작업으로 보류한다.
+
+### 허용하는 작업
+
+- **버그·회귀·보안·개인정보 위험 수정:** 재현 → 원인 확인 → 수정 전 실패 테스트
+  → 최소 수정 → 관련 기존 기능과 교차 저장소 검증. 긴급 위험은 즉시 차단하거나 기능을
+  비활성화할 수 있다. 승인·검증 절차를 없애는 예외는 만들지 않는다.
+- **기존 사용자 여정 완성:** 공공데이터 선택 → 수집 → 표준화·품질·PII·이용조건 확인
+  → 테이블·SQL·산출물 → 이력·재시도. 기존에 제공 중인 화면·API의 정확성, 설명,
+  오류 처리, 접근성, 사용자 격리와 이미 정의된 계약을 개선한다.
+- **기존 서비스의 안정적 운영:** 백업·복원, 사용자 삭제, 자원·디스크 제한,
+  인증·배포 검증, 로그·관측성, CI 신뢰성, 릴리스 호환성 등 **이미 운영 중인 경로의
+  필수 안전장치**를 완성한다. 새 운영 시스템이나 스케줄을 만드는 해법보다 기존의 것을
+  검증·수정하는 해법을 우선한다.
+- **행동 보존 리팩터링:** 실제 결함·회귀 위험이나 측정된 유지보수 비용을 줄이고
+  이전·이후 동작을 테스트로 비교할 수 있을 때만 한다. 파일 길이만 줄이는 작업,
+  무관한 이름 바꾸기, 테스트 없이 대규모 구조 재설계는 보류한다.
+- **릴리스 안정화:** 동결 범위 안에서 릴리스 후보를 묶어 replay 제품 E2E(V5-replay),
+  실제 구성요소 테스트(V3), 복구 리허설, 호환되는 Builder·Studio 버전 쌍으로 검증한다.
+  기존 릴리스 주간 동결 규칙은 그대로 적용한다.
+
+### 기본적으로 보류하는 작업
+
+- 신규 Provider·데이터셋·소스 종류·Export 형식·게시 목적지 및 신규 외부 서비스 연동.
+- 새로운 API/CLI 명령, 신규 화면·제품 흐름, 파생 Snapshot·셀 수정·멀티 테이블
+  확장, 선택적 한국어 NER/AI 모델 및 기능 시나리오 확대.
+- 새 데이터베이스·상태 백엔드·배포 프로파일·런타임 모드, 새로운 배치/예약 작업·
+  에이전트 자동화·상시 모니터링 서비스와 이를 운영하기 위한 추가 계정·키·인프라.
+- 새 기능의 선행 개발을 안정화라고 이름만 바꾼 작업. `fix`·`refactor` 제목도
+  실질적으로 사용자 기능이나 운영 책임을 늘리면 보류한다. `feat` 제목이라도 기존
+  서비스의 필수 결함을 메우는 일이라면 아래의 엄격한 예외 심사를 받는다.
+
+### 범위 예외와 기계 검사
+
+1. 새로운 표면이 **이미 제공하는 경로의 확인된 장애·보안 위험을 없애는 유일하게
+   합리적인 최소 수정**인 경우에만 예외를 검토한다. 기존 이슈 링크, 재현 증거,
+   확장이 없는 대안, 추가 유지보수·외부 데이터 전송 부담, 되돌리기 방법을 PR에 적는다.
+   편의성·향후 확장성·미래 공모전이나 신규 기획은 예외 근거가 아니다.
+2. 예외 PR에는 정확히 `Scope exception: YES`, 구체적인 한 줄
+   `Existing flow or risk: ...`, `Refs #N` 또는 `Closes #N`을 적고
+   `review:R3` 라벨을 단다. **PR 작성자 외에 쓰기 권한을 가진 사람이 승인**해야 한다.
+   PR 본문의 자기 선언은 승인이 아니다. 없는 승인이나 실행 결과를 만들어 적지 않는다.
+3. 세 저장소의 `scripts/check_stabilization_scope.py`는 `feat` PR 및 새
+   Spec/Provider, HTTP 경로, 화면, 워크플로·예약 실행처럼 기계적으로 인지 가능한
+   확장을 **기본 거부**한다. `review:R3`와 위 PR 필드가 없으면 CI가 실패하며,
+   중요 변경에 대한 기존 `R3 review` 필수 검사는 독립 승인을 강제한다.
+   스크립트와 그 실행 경로를 바꾸는 PR도 작성자가 아닌 사람의 검토가 필요하다.
+4. **한계:** CI가 새 기능의 의미를 완벽하게 이해하지는 못한다. 새 의존성, 새
+   데이터 전송 및 숨은 운영 책임은 PR 작성자와 리뷰어가 변경 전후를 직접 비교해
+   판단해야 한다. 특히 `fix`로 위장한 확장은 검사를 통과해도 병합하지 않는다.
+5. 같은 저장소·제품군에서 독립적인 안정화 이슈는 서로 다른 브랜치/PR에서
+   병렬로 진행할 수 있지만, 같은 계약·파일을 동시에 편집하지 않는다. 동일
+   이슈의 중복 구현이나 비밀정보가 있는 워크플로의 무검증 병렬 실행은 금지한다.
+6. 모든 범위 밖 작업은 기존 이슈를 남겨 두고 결정을 기다린다. 제품의
+   `priority:critical` 위험을 `priority:low`로 낮추는 근거로 이 모드를
+   사용하지 않는다. 출시 전 필수 안전 조건도 임의로 제외하지 않는다.
+
+### 안정화 중 Issue 접수·후속 작업 통제 — 2026-10-13
+
+**기능 동결은 Issue 수를 숨기는 정책이 아니다.** 새로 확인된 독립 버그, 보안 위험,
+사용자 데이터 손상, 기존 운영 장애는 즉시 기록한다. 기존 문제를 억지로 합쳐
+영향을 숨기거나 버그 제보 자체를 막지 않는다. 반대로 이미 알려진 문제의 증거,
+재시도 실패, 리뷰에서 나온 같은 범위의 잔여 작업을 매번 새 Issue로 만들지 않는다.
+
+1. **먼저 조회한다.** 해당 저장소와 다른 두 제품 저장소의 Open/Closed Issue 및
+   연결된 PR을 증상·원인·경로·오류 코드로 검색한다. 현재 Issue/PR에 넣을 수 있는
+   재현 로그·실패 테스트·설계 질문·진행 상황이면 새 Issue가 아니라 댓글이나
+   체크리스트로 갱신한다. 닫힌 이슈의 동일 결함이 재발했다면 기존 해결의 회귀인지
+   먼저 확인하고, 동일 범위는 재오픈을 우선 검토한다.
+2. **신규 독립 결함만 별도로 연다.** 재현 조건, 영향받는 기존 사용자 여정,
+   코드/워크플로/CI 실행 근거, 기존 이슈와 다른 이유, 완료 조건과 검증 방법이
+   제시될 때 별도 Issue가 정당하다. 아직 재현되지 않은 가능성은 현재 PR의
+   `Follow-up Candidate`로 남기고 triage한다. 중요한 보안 위험의 긴급 격리와
+   제보는 근거 수집을 기다리느라 지연하지 않는다.
+3. **PR 후속을 쪼개서 완료를 가장하지 않는다.** 원래 Acceptance Criteria가
+   미충족이면 기존 Issue를 유지한다(17절). 리뷰에서 발견된 같은 수정 범위의
+   문제는 같은 PR에서 해결한다. 새로운 원인·소유자·검증 범위가 명확히 분리되고
+   기존 Issue와 중복되지 않는 경우에만 별도 Issue로 승격한다.
+4. **자동 모니터링은 기존 경보를 갱신한다.** 새 취약점과 예약 작업 실패는
+   감추지 않는다. 동일한 배포 이미지 구성요소는 태그·digest가 바뀌어도 기존
+   보안 Issue를 갱신하고, 재검증 전 사람이 쓴 위험 판정은 보존한다. 예약 게시
+   실패는 워크플로 단위의 기존 incident를 재사용하고 실행 링크를 추가한다.
+   서로 다른 원인·서비스 영향은 단순히 이슈 수를 줄이려고 무리하게 합치지 않는다.
+   알림·이슈 기록이 실패하면 실행 자체가 실패로 남아야 한다.
+5. **신규 데이터셋 확대 자동화는 동결 중 보류한다.** 활용신청 승인 감지와
+   새로운 spec 초안 생성을 위한 예약 실행은 중단한다. 필요할 때 사람이 시작하는
+   읽기 전용 dry run은 허용하지만, 새 Issue·Spec·PR을 만들지 않는다.
+   동결 해제는 이 정책의 별도 검토·승인을 필요로 한다.
+6. **발행자와 승인자는 다르다.** 사람은 버그와 취약점을 계속 제보할 수 있다.
+   자동화·에이전트가 신규 Issue를 생성하는 코드는 정해진 중복 제거 키와
+   부정 테스트를 요구한다. 인위적으로 `fix` 제목으로 바꾸거나 우선순위를
+   낮춰 새 기능을 안정화 작업으로 포장할 수 없다.
+
+기존 기능의 보안 이슈와 운영 경고는 계속 추적하지만, **이슈를 새로 발행하는
+워크플로를 만드는 것 자체는 새로운 운영 책임**이므로 동결 예외 승인이 필요하다.
+GitHub 자체의 사람 작성 Issue를 생성 전에 차단할 수 있다는 의미는 아니다.
+triage 단계에서 위 근거를 검토하고, 중복 Issue는 기존 Issue로 연결해 정리한다.
+
+### 데이터셋 요청은 주 단위로 묶어 처리하고, 자동 병합은 허용하지 않는다 — 2026-10-12 결정
+
+저장소 소유자(yeongseon)가 2026-10-12에 kpubdata-lab/kpubdata 이슈 #899 에서 정했다.
+
+- **주 단위 묶음 처리.** 데이터셋 요청은 들어오는 즉시 처리하지 않고 한 주에 한 번 묶어서
+  처리한다. 요청 이슈는 그 사이 열어 둔 채 대기열(`priority:*` 라벨)에 쌓인다. 안정화 전용
+  모드(위 1.3절)가 풀리기 전에는 신규 데이터셋 자체를 보류하므로, 이 주기는 동결이 풀린 뒤부터
+  적용한다.
+- **자동 병합 금지.** 요청을 처리한 PR을 워크플로나 봇이 스스로 병합하지 않는다. 브랜치
+  보호에는 승인 요구가 없으므로, 자동 병합을 허용하면 사람의 검토가 통째로 빠진다. 워크플로가
+  병합하는 것은 이미 `tests/unit/test_no_workflow_merges.py` 가 막고 있고, 이 결정은 그
+  검사를 풀지 않는다는 뜻이다. 병합은 사람이 한다.
+- **아직 정하지 않은 것.** 키 교체 주기와 분기별 도구 비교 주기는 메인테이너가 숫자를
+  정할 때까지 비워 둔다. 추측으로 채우지 않는다.
+
+### 동결 해제 조건
+
+메인테이너는 최소한 현재 사용자 여정의 교차 저장소 E2E, 핵심 CI, 보안 차단,
+백업·복원 리허설, 운영 장애 대응, 릴리스 쌍의 호환성에 관한 실행 증거를 검토한다.
+이후 별도 정책 PR에서 확장 가능 범위를 명시하고 독립 승인을 받아 해제한다.
+그전까지 새 기능 제안은 우선순위가 높아졌다는 이유만으로 착수하지 않는다.
+
+---
+
+# 2. 관리 계층
+
+```text
+Product Direction
+       ↓
+      Epic
+       ↓
+     Issue
+       ↓
+       PR
+       ↓
+     Review
+       ↓
+ Verification
+       ↓
+    Release
+```
+
+Milestone 계층은 만들지 않는다.
+
+## 2.1 상태 정보의 기록 위치
+
+| 정보 | 기록 위치 | 설정 주체 |
+|---|---|---|
+| Status (15절) | GitHub Project 필드 | 사람·자동화 (Done은 사람만) |
+| Priority (8절) | **`priority:*` 라벨** (2.1.2절) | 사람 (High 이상 승격은 사람만) |
+| Epic (5절) | **`epic:*` 라벨** (2.1.1절) | 사람 |
+| Required Verification (18절) | Project 필드 + 이슈 본문 | 이슈 작성자, triage에서 확정 |
+| Target Release (33절) | Project 필드 | 사람 |
+| 유형 (bug / feature / docs / chore) | **제목 접두사** → `type:*` 라벨은 파생 (2.1.3절) | 제목은 작성자, 라벨은 자동화만 |
+| Review Level (R0~R3) | 라벨 (경로 기반 자동 부여) | 자동. 낮추는 것은 사람만 |
+| Severity (9절) | 라벨 (bug만) | triage |
+| Triage 분류 (11절) | 감사 결과표에만 기록. 라벨로 만들지 않음 | triage |
+
+- 세 저장소를 묶는 GitHub Project 하나를 사용한다.
+- **Epic 이슈는 `kpubdata` 저장소에 둔다.** 다른 저장소의 이슈는 sub-issue로 연결한다.
+- **Blocked · Needs Human 은 Status 필드로만 관리하고 라벨로 중복하지 않는다.**
+  같은 정보를 두 곳에 두면 한쪽이 반드시 뒤처진다.
+- 위 표에 없는 라벨은 새로 만들지 않는다.
+- 라벨 추가는 `epic:governance` 를 거친다.
+
+## 2.1.1 Epic 을 라벨로 옮긴 이유 — 2026-09-27 개정
+
+이 절은 원래 Epic 을 *Project 필드 + Epic 이슈의 sub-issue* 로 기록하라고 했다.
+그 방식은 채택되지 않았고, 다음 세 가지가 이유다.
+
+- **Project 가 없다.** 세 저장소를 묶는 Project 를 만들려면 `gh` 의 `project`
+  scope 가 필요하고, 그것이 아직 없다. Epic 을 Project 필드에 두라는 규칙은
+  Project 가 생기기 전까지 **아무것도 기록하지 못한다.**
+- **Epic 이슈가 없었다.** `EPIC-A` ~ `EPIC-G` 는 5절의 표에만 있었고 이슈로
+  만들어진 적이 없다. 57개 이슈 본문이 `EPIC-G` 를 적고 있었지만 sub-issue 로
+  연결된 것은 0건이다. 규칙이 아니라 **관례가 존재하지 않았다.**
+- **`EPIC-A` 는 이름이 아니다.** 읽는 사람이 5절 표를 찾아야 뜻을 안다.
+
+그래서 `epic:*` 라벨 9개를 만들고 **열린 이슈 전부에 붙였다.** 이름이 곧 뜻이고,
+검색·필터가 되고, 저장소를 넘나들어도 같은 이름이다.
+
+| 라벨 | 담는 것 |
+|---|---|
+| `epic:trust` | 검증·증거·drift·provenance |
+| `epic:warehouse` | table · snapshot · SQL · query run |
+| `epic:governance` | 정책·라벨·CI 강제 |
+| `epic:byok` | credential·격리·누출 |
+| `epic:policy` | 약관·라이선스·PII·publish gate |
+| `epic:datasets` | catalogue → spec, provider 온보딩 |
+| `epic:distribution` | 버전·이미지·릴리스·공급망 |
+| `epic:brand` | 브랜드·용어 |
+| `epic:onboarding` | 키 입력·probe·첫 경험 |
+
+5절의 `EPIC-A` ~ `EPIC-G` 는 이 라벨들로 **대체된다.** 이 표가 정본이다.
+
+**Blocked · Needs Human 은 여전히 라벨로 만들지 않는다.** 위의 근거는 Epic 에만
+해당한다 — Epic 은 Project 가 없으면 기록할 곳이 아예 없지만, Blocked 는 이슈
+본문의 `Blocked by:` 절이 이미 담고 있고 라벨을 더하면 두 곳이 어긋난다.
+
+Project 가 생기면 Status·Target Release 는 표대로 Project 필드로 간다.
+Epic 은 라벨로 남긴다 — 위의 세 번째 이유는 Project 가 생겨도 사라지지 않는다.
+
+---
+
+## 2.1.2 Priority 도 라벨이다 — 2026-09-27 개정
+
+Epic 과 같은 이유다(2.1.1절). Project 가 없으면 Priority 필드는 **아무것도 기록하지
+못한다.** GOV-02 가 `gh` 의 `project` scope 없이 막혀 있는 동안 우선순위를 둘 곳이
+없었고, 실제로 열린 이슈 85건 중 우선순위가 기록된 것은 0건이었다.
+
+| 라벨 | 뜻 |
+|---|---|
+| `priority:critical` | 이미 노출·피해가 발생 중이다. 다른 작업을 멈춘다 |
+| `priority:high` | 제품 흐름·보안·데이터 정확성을 실질적으로 막는다 |
+| `priority:medium` | 제품화에 필요하지만 다른 작업을 중단시키지 않는다 |
+| `priority:low` | 장기 개선·최적화·편의성 |
+
+**접두사를 붙인다.** 맨 `high` 는 무엇의 high 인지 모호하고 `severity` 와 섞인다 —
+9절이 경고하는 혼동이 라벨 이름에서 시작되게 두지 않는다.
+
+`P0` / `P1` / `P2` 라벨은 **폐기한다**(8절). 그 표기를 쓰지 않기로 한 것은 원래
+결정이고, 라벨만 남아 있었다.
+
+Project 가 생기면 Status·Target Release 는 2.1절 표대로 Project 필드로 간다.
+Priority 는 Epic 과 함께 라벨로 남긴다 — 이슈 목록에서 바로 보이고 필터가 되는 것이
+보드를 열어야 보이는 것보다 낫다.
+
+## 2.1.3 유형은 제목이 정하고, 라벨은 따라온다 — 2026-09-29 개정
+
+이슈, PR, 그리고 기본 브랜치의 최종(squash) 커밋 제목은 같은 형식을 쓴다. **이 절이 네
+저장소(kpubdata · kpubdata-builder · kpubdata-studio · kpubdata-watch)의 제목 규칙 정본이다** — 각 저장소의
+AGENTS.md · CONTRIBUTING.md · PR 템플릿은 여기를 가리킨다.
+
+```text
+type: description
+type(scope): description
+type!: description          # 호환성을 깨는 변경 표기
+type(scope)!: description
+```
+
+- 제목은 영어. `type` 과 `scope` 는 소문자, 콜론 뒤 공백 한 칸, 끝에 마침표를 붙이지 않는다.
+- `scope` 는 선택이다. 통일을 위해 모든 제목에 억지로 붙이지 않는다.
+- `description` 은 변경 대상과 의도를 구체적으로 쓴다. 소문자로 시작하되 API 이름·약어·
+  고유명사 표기는 유지한다. 짧게 만들려고 오류 코드·API 이름·핵심 증상을 지우지 않는다.
+- 이슈 제목은 **현상**을, PR 제목은 **해결 내용**을 말할 수 있다. 같은 범위면 둘을 맞추되,
+  범위가 다르면 문구까지 억지로 같게 하지 않는다. 원인이 확정되지 않은 조사 이슈에
+  `fix:` 를 붙여 해결책을 확정하지 않는다.
+- 우선순위·크기·상태·담당자, `[Bug]` `[Feature]` `[WIP]` 같은 접두사를 넣지 않는다 —
+  라벨과 Draft 상태가 그 일을 한다.
+- **PR 제목에 이슈 번호를 붙이지 않는다** — 끝의 `(#123)` 만이 아니라 제목 어디에도
+  `#123` · `repo#123` · `owner/repo#123` · 이슈·PR URL 을 쓰지 않는다 (#742). 본문에
+  `Closes #123` · `Refs owner/repo#123` 으로 연결한다. squash 병합이 최종 커밋 제목 끝에 PR
+  번호를 붙인다: `fix: decode nonempty NULL-only collection results (#503)`.
+- **제목은 영어다** (2026-10-01, #742). 파서는 한글과 제목 속 이슈 참조를 모든 제목에서
+  거부한다 — PR 은 체크가 실패해 병합이 막히고, 이슈는 고칠 방법을 적은 댓글만 달린다(이슈는
+  게이트가 아니다 — 영어가 보고를 막으면 한국어로 열고 triage 에서 고친다, AGENTS.md).
+- **PR 제목은 100자 이하이고 이슈·PR URL 을 담지 않는다** (#741). 이 둘은 PR 제목에만
+  검사한다. GitHub 의 `Revert "…"` 제목은 되돌리는 커밋의 제목을 번호까지 그대로
+  인용하므로 모든 규칙의 예외다.
+
+| type | 용도 |
+|---|---|
+| `feat` | 사용자에게 제공하는 기능 추가 |
+| `fix` | 제품 동작의 버그 수정 |
+| `docs` | 문서 변경 |
+| `test` | 테스트 추가·수정 |
+| `perf` | 성능 개선 |
+| `refactor` | 외부 동작을 유지하는 내부 구조 개선 |
+| `ci` | CI·자동화 워크플로 변경 |
+| `build` | 빌드·패키징·의존성 |
+| `chore` | 위에 해당하지 않는 유지보수 |
+| `style` | 동작 변경 없는 서식 변경 |
+| `revert` | 기존 변경 되돌리기 (GitHub 의 `Revert "…"` 제목도 허용) |
+
+`i18n` 은 2026-09-29 에 뺐다 — 번역은 `docs` 또는 `chore(i18n)` 이다. 그 전에 병합된 제목은
+이력이므로 고치지 않는다.
+
+**제목이 버전을 정한다 — 2026-10-11 개정 (#819, #895).** kpubdata 는 release-please
+(`release-please.yml`)가 마지막 태그 뒤의 커밋 제목을 읽어 다음 버전을 계산하고 release PR 을
+연다 — 0.x 에서 BREAKING(`!`)이나 `feat` 이 있으면 minor, `fix` 만 있으면 patch 다. 그래서 틀린
+type 은 틀린 버전이 된다. 병합 전에 제목을 고친다. 사람이 하는 것은 그 release PR 을 검토하고
+병합할지 정하는 것이다(14절 "Release 수행"). `release.yml` prepare 의 `bump` 입력은 release-please
+가 하지 않는 pre-release 와 critical patch 에만 쓴다. 릴리스 노트는 여전히 사람이 쓴 CHANGELOG
+절이 정한다 — release-please 는 CHANGELOG 를 쓰지 않는다. kpubdata-builder 는 아직
+release-please 로 옮기지 않았으므로 그 `release.yml` prepare 의 `bump` 를 사람이 고른다(#895).
+kpubdata-studio 의 prepare 에는 `bump` 입력이 없다 — Builder 의 최신 릴리스 태그를 읽어 같은
+버전을 쓴다. Studio 는 Builder 를 옮긴 뒤에도 release-please 로 버전을 따로 계산하지 않고
+Builder 의 태그를 따른다(같은 버전 정책 ADR 0004, 2026-10-12 소유자 결정, #895).
+
+**병합은 squash 하나뿐이다** (2026-09-29, 네 저장소 설정): merge commit·rebase merge 는 꺼져
+있고, squash 커밋 제목은 PR 제목, **본문은 PR 본문**이다 (2026-10-01 에 커밋 메시지 모음에서
+바꿨다 — #743). 그래서 PR 제목이 곧 기본 브랜치의 커밋 제목이 되고, 브랜치의 개별 커밋
+메시지는 기본 브랜치에 남지 않는다. 공동 작성자를 남기려면 `Co-authored-by:` 줄을 **PR
+본문**에 쓴다.
+
+**언어** (ADR 0003, 2026-10-01 확인): 커밋 **제목**(= PR 제목)은 영어다. 커밋 **본문**(= PR
+본문)은 PR 본문 규칙을 따라 자유다.
+
+**원본은 제목이고 `type:*` 라벨은 파생이다.** `.github/workflows/titles.yml` 이 이슈
+제목을 읽어 라벨을 붙이고 맞지 않는 `type:*` 라벨을 뗀다. 사람도 에이전트도
+`type:*` 라벨을 손으로 붙이지 않는다 — 손으로 붙이는 순간 유형이 두 곳에 살게 되고,
+이 절 앞부분이 말하는 대로 한쪽이 뒤처진다. 기계가 만드는 사본은 뒤처지지 않는다.
+
+| 제목의 type | 라벨 |
+|---|---|
+| `fix` | `type:bug` |
+| `feat` | `type:feature` |
+| `docs` | `type:docs` |
+| 그 밖 (`chore` `ci` `test` `refactor` `style` `perf` `build` `revert`) | `type:chore` |
+
+허용 type 과 대응표의 정본은 `scripts/conventional_title.py` 다. 세 저장소가 같은
+파서를 쓴다.
+
+- **PR 제목은 병합을 막는다** (2026-10-01, #741). `PR title` 은 네 저장소 모두 필수 체크다 —
+  `CI gate` 에 넣지 않은 것은 제목 수정이 CI 전체를 다시 돌리지 않게 하려는 것이다. 형식이
+  틀리면 실패하고, 생성·제목 수정·재오픈·새 커밋 때마다 다시 검사한다. 제목은 이벤트
+  payload 가 아니라 API 로 지금의 값을 읽고(재실행이 옛 제목을 다시 보지 않게), 환경변수로만
+  스크립트에 전달된다(셸 코드에 끼워 넣지 않는다). 제목을 고쳐 통과하면 같은 head 의 앞선
+  실패 실행은 `required-check-refresh.yml` 이 다시 돌린다(#759). 개별 개발 커밋은 검사하지
+  않는다 — 기본 브랜치에 남는 것은 squash 커밋 하나다.
+- **이슈 제목은 게이트가 아니다.** 틀리면 고칠 방법을 적은 댓글이 **하나만** 달리고(다시
+  편집해도 늘지 않는다), 고치면 지워진다. 제목 때문에 이슈를 자동으로 닫지 않는다. 외부
+  기여자가 규칙을 몰라도 이슈를 열 수 있어야 한다.
+- **설명은 여전히 문제를 말한다.** 이슈를 열 때는 원인도 고칠 방법도 모를 수 있다.
+  `fix(localdata): empty wrapper becomes a phantom row` 처럼 증상을 적는다.
+- `bug` · `enhancement` · `documentation` 같은 GitHub 기본 라벨은 쓰지 않는다. 같은
+  정보의 세 번째 장소다.
+- 이 개정 전의 `type:refactor` · `type:architecture` 는 더 붙이지 않는다. 제목이 type 을
+  정하면 워크플로가 다른 `type:*` 라벨을 모두 떼므로, 이슈에는 `type:*` 가 하나만 남는다.
+- `GITHUB_TOKEN` 으로 만든 이슈는 `issues` 이벤트를 일으키지 않으므로 워크플로가
+  라벨을 붙이지 못한다(예: builder 의 `fix(freshness): …` 알림). 제목은 형식을 지킨다.
+
+[BACKLOG.md](BACKLOG.md) 의 "제목에 접두사를 붙이지 않는다" 는 **백로그 일련번호**
+(`GOV-01:`)에 대한 결정이고 그대로 유효하다. 이 절이 허용하는 접두사는 type 하나뿐이다.
+
+# 3. Product Direction
+
+제품 방향은 Issue 목록이 아니다.
+
+```text
+NOW
+Self-hosted BYOK productization
+
+NEXT
+Evidence-based dataset onboarding
+Policy-safe publishing
+
+LATER
+Hosted BYOK
+Scheduled builds
+Async collection
+```
+
+이 정도만 ROADMAP에 유지한다.
+
+**데이터셋 지원 상태는 README·ROADMAP에 손으로 적지 않는다.**
+
+spec과 evidence에서 생성된 파일:
+
+- `SUPPORTED_DATA.md`
+- `docs/status.md`
+
+만 기준으로 사용하고 CI `--check`로 드리프트를 막는다.
+
+---
+
+# 4. Epic 정책
+
+Epic은 하나의 사용자 가치 또는 제품 위험을 해결한다.
+
+권장 크기:
+
+- 약 1~4주
+- Issue 약 3~15개
+- 여러 저장소 포함 가능
+
+## 4.1 Epic 이슈는 만들지 않는다 — 2026-09-27 개정
+
+Epic 은 **라벨이다**(2.1.1절). Epic 이슈를 따로 만들지 않는다.
+
+그래서 "Epic 은 사람만 만들고 닫는다" 는 원래 문장은 이렇게 바뀐다.
+
+- **`epic:*` 라벨을 새로 만드는 것은 사람만 한다.** 에이전트는 기존 라벨만 붙인다.
+- **Epic 을 닫는다는 개념은 없다.** 라벨이 붙은 열린 이슈가 0건이 되면 그 Epic 이
+  끝난 것이다. 닫을 대상이 없다.
+
+Epic 이슈를 만들지 않는 이유는 그것이 **낡을 두 번째 장소**이기 때문이다. Epic
+이슈의 체크리스트와 실제로 그 라벨이 붙은 이슈 목록은 반드시 갈라진다. 목록은
+라벨 필터가 언제나 정확하게 답한다.
+
+Epic 의 목표·범위·순서는 커밋되는 파일 한 곳에 둔다 —
+[BACKLOG.md](BACKLOG.md). PR 리뷰를 거쳐야 바뀐다.
+
+`kpubdata#1`~`#4` 처럼 과거에 만들어진 `[Epic]` 이슈 9건은 모두 닫혀 있고, 그
+방식으로 돌아가지 않는다.
+
+## 4.2 권장 크기는 라벨의 점검 기준이 된다
+
+위의 "Issue 약 3~15개" 는 이제 **라벨이 너무 넓은지 재는 자**다. 한 라벨에 이슈가
+계속 쌓이면 그 Epic 이 여러 개를 담고 있다는 뜻이다.
+
+`EPIC-G` 가 온보딩·브랜드·i18n 을 다 담아 15건이 몰렸던 것이 그 예이고, 그래서
+`epic:brand` 를 분리했다. 현재 `epic:governance` 가 18건으로 권장 범위를 넘는다 —
+정책·라벨·CI 강제가 한 칸에 있다. 다음 점검 대상이다.
+
+---
+
+# 5. 현재 권장 Epic
+
+> **이 절의 `EPIC-A` ~ `EPIC-G` 코드는 2.1.1절의 `epic:*` 라벨로 대체됐다.**
+> 아래 서술은 각 Epic 이 *무엇을 하는지* 를 설명하는 부분만 유효하다. 코드로
+> 이슈를 분류하지 않는다.
+>
+> | 이 절의 코드 | 지금 쓰는 라벨 |
+> |---|---|
+> | EPIC-A | `epic:trust` |
+> | EPIC-B | `epic:byok` |
+> | EPIC-C | `epic:policy` |
+> | EPIC-D | `epic:distribution` |
+> | EPIC-E | `epic:datasets` |
+> | EPIC-F | `epic:governance` |
+> | EPIC-G | `epic:onboarding` · `epic:brand` |
+>
+> `EPIC-G` 하나가 온보딩·브랜드·i18n 을 다 담고 있었다. 15건이 그 코드에 몰린
+> 것이 칸이 부족했다는 증거다. `epic:warehouse` 는 대응하는 코드가 없다 — 그
+> 작업이 trust 와 distribution 으로 흩어져 있었다.
+
+## EPIC-A — Trust & Evidence
+
+> "지원한다"는 말을 증명할 수 있게 한다.
+
+**검증 장치를 만든다.**
+개별 데이터셋에 적용하는 일은 EPIC-E가 한다.
+
+- `make verify`
+- `probe`
+- dataset status
+- CI evidence
+- Stable definition
+- fixture provenance
+- drift detection
+- live validation 인프라
+- 국내 runner 운영
+
+## EPIC-B — BYOK Security
+
+> 사용자 자신의 키로 실행하되 제품은 키를 영속 저장하지 않는다.
+
+- credential persistence 제거
+- ephemeral credential context
+- cache isolation
+- user isolation
+- secret leakage test
+- SSRF protection
+- proxy/APM redaction
+
+## EPIC-C — Policy-Safe Data
+
+> 허용되는 데이터를 허용되는 방법으로만 내보낸다.
+
+- license metadata
+- provider terms
+- 약관 매트릭스
+- redistribution policy
+- commercial-use policy
+- PII handling
+- publish gate
+- attribution
+- dataset card
+
+## EPIC-D — Distribution
+
+> Git checkout이 아니라 실제 배포 artifact로 제품을 사용할 수 있게 한다.
+
+- Python wheel
+- container image
+- Studio image
+- Compose
+- version compatibility
+- clean installation
+- release E2E
+
+## EPIC-E — Dataset Migration
+
+> 실제 수요가 있는 dataset을 검증 가능한 spec으로 전환한다.
+
+**EPIC-A가 만든 장치를 데이터셋에 적용한다.**
+
+- 수요 목록 기반 우선순위
+- catalogue → spec
+- localdata migration
+- provider onboarding
+- Stable 승격 신청
+- 승격 결정은 사람이 수행
+
+## EPIC-F — Project Governance
+
+> Issue / PR / Review / Release 상태 자체를 신뢰할 수 있게 한다.
+
+- issue cleanup
+- label cleanup
+- review policy
+- release policy
+- agent policy와 강제 장치
+- documentation SSOT
+- project board
+
+## EPIC-G — User Onboarding
+
+> 사용자가 키를 넣으면 무엇을 쓸 수 있고 무엇을 신청해야 하는지 바로 알 수 있게 한다.
+
+- 키 입력 UI
+- 메모리 전용 credential
+- 사용자 키 probe
+- 사용 가능 / 신청 필요 / 승인 대기 / 파라미터 확인 상태
+- 서비스 단위 활용신청 안내
+- 직접 신청 링크
+- 키별 quota 표시
+- provider별 가입·키 발급 가이드
+- 결과는 키가 아니라 계정 기준으로 저장
+
+---
+
+# 6. Issue 기본 원칙
+
+Issue 하나는 **검증 가능한 하나의 문제**를 다룬다.
+
+Issue를 만들기 전에 반드시 다음 질문에 답한다.
+
+1. 실제 문제가 무엇인가?
+2. 근거가 있는가?
+3. 독립적인 작업인가?
+4. 기존 Issue와 중복되지 않는가?
+5. 어떤 조건이면 끝났다고 판단할 수 있는가?
+
+답할 수 없다면 Issue를 만들지 않는다.
+
+---
+
+# 7. Issue Template
+
+## 7.1 기본 템플릿 — 일반 버그 수정·작은 기능 이상(R1 이상)
+
+```markdown
+# Problem
+
+현재 어떤 문제가 있는지 설명한다.
+
+# Evidence
+
+재현 명령, 코드 위치, 로그, 공식 문서 등을 기록한다.
+
+# User / Product Impact
+
+이 문제가 실제 사용자 또는 제품에 어떤 영향을 주는지 설명한다.
+
+# Expected Behavior
+
+원하는 결과를 기술한다.
+
+# Scope
+
+이번 Issue에서 수정할 범위.
+
+# Non-goals
+
+이번 Issue에서 하지 않을 것.
+
+# Acceptance Criteria
+
+- [ ]
+- [ ]
+- [ ]
+
+# Required Verification
+
+검증 수준을 뜻과 함께 적는다. 예: 단위 테스트(V1), replay·계약 테스트(V2).
+정적 검사(V0) / 단위 테스트(V1) / replay·계약 테스트(V2) / 구성요소 통합 테스트(V3) /
+실제 provider API 검증(V4) / replay 제품 E2E(V5-replay) / 실제 제품 E2E(V5-live)
+
+# Dependencies
+
+Blocked by:
+Blocks:
+
+# Product Epic
+
+연결된 Epic.
+
+# Notes
+
+추가 정보.
+```
+
+## 7.2 경량 템플릿 — 오타·링크·포맷·생성 파일 전용(R0)
+
+```markdown
+# Problem
+
+# Acceptance Criteria
+
+- [ ]
+
+# Required Verification
+
+정적 검사(V0)
+```
+
+---
+
+# 8. Priority 정책
+
+기록 위치는 `priority:*` 라벨이다(2.1.2절).
+
+기존 `P0 / P1 / P2` 표기는 사용하지 않는다. **라벨도 폐기한다** — 표기를 쓰지 않기로
+하고도 라벨이 남아 있어서 열린 이슈 10건이 계속 그것을 달고 있었다.
+
+기존 문서의 Priority는 기계적으로 치환하지 않는다.
+
+- 기존 P0 → High 후보
+- 기존 P1 → Medium 후보
+- 기존 P2 → Low 후보
+
+이후 triage에서 다시 판정한다. **치환이 아니라 원점 재판정이다** — 잘못된
+우선순위가 이름만 바꿔 살아남지 않게 한다.
+
+## Critical — 2026-09-27 추가
+
+**이미 노출돼 있거나 피해가 발생 중이다.** 다른 작업을 멈추고 이것부터 한다.
+
+High 와 가르는 기준은 심각성이 아니라 **지금 노출돼 있는가**다. 같은 결함이라도
+배포되지 않았으면 High 이고, 배포된 버전에서 재현되면 Critical 이다.
+
+예:
+
+- 배포된 버전이 credential 을 로그·응답·백업에 남긴다
+- 운영 중인 배포에서 사용자가 다른 사용자의 데이터를 읽을 수 있다
+- 게시된 데이터가 지금 약관을 위반하고 있다
+- 릴리스된 산출물이 잘못된 데이터를 담고 있다
+
+Critical 에는 High 와 같은 `Impact:` · `Blocks:` · `Evidence:` 가 필요하고,
+**`Evidence:` 는 재현 경로여야 한다** — 가능성이 아니라 지금 그렇다는 것을 보여야
+Critical 이다.
+
+Critical 은 Severity 가 아니다(9절). Severity 는 bug 의 성질이고 Critical 은 *지금
+무엇을 먼저 하는가*다. 심각한 버그가 배포되지 않았다면 Critical 이 아니다.
+
+## High
+
+현재 제품 흐름, 보안, 데이터 정확성 또는 현재 Epic 진행을 실질적으로 막는다.
+
+예:
+
+- credential leakage
+- 사용자 간 데이터 노출
+- 금지 데이터 publish 가능
+- 핵심 build 실패
+- 잘못된 데이터 생성
+- `make verify`가 정상 workflow를 차단
+- release artifact가 실행되지 않음
+- evidence pipeline 신뢰 불가
+
+High 이상에는 반드시 다음이 있어야 한다.
+
+```text
+Impact:
+Blocks:
+Evidence:
+```
+
+열린 이슈 85건 중 **35건에 `Evidence:` 절이 없다.** 그 이슈들은 지금 High 로 올릴
+수 없다. 근거를 채우는 것이 GOV-05(#510)의 실제 작업이다.
+
+High라는 이유만으로 긴급 릴리스한다는 의미는 아니다.
+
+## Medium
+
+현재 제품화를 위해 필요하지만 다른 작업을 즉시 중단시킬 정도는 아니다.
+
+예:
+
+- public API 정리
+- provider documentation
+- quota management
+- status page
+- deployment documentation
+- large-file streaming
+- observability
+
+대부분의 정상적인 제품 개발 작업은 Medium이어야 한다.
+
+## Low
+
+장기 개선, 최적화, 편의성, 미래 확장.
+
+예:
+
+- async client
+- UI component refactoring
+- performance optimization
+- additional providers
+- OpenSSF badge
+- advanced scheduling
+
+---
+
+# 9. Priority와 Severity를 혼동하지 않는다
+
+Priority는 **현재 작업 순서**를 의미한다.
+
+Severity는 **문제의 영향도**를 의미한다.
+
+보안 문제라는 이유만으로 자동 High가 되는 것은 아니다.
+
+## 9.1 Severity 척도
+
+| Severity | 정의 | 예 |
+|---|---|---|
+| Critical | 키·개인정보 유출, 사용자 간 데이터 노출, 금지 데이터 공개 게시 | 로그에 서비스키 평문 |
+| Major | 잘못된 데이터 생성, 핵심 흐름 실패, 우회 가능한 정책 게이트 | 타입 캐스팅으로 값 손상 |
+| Minor | 기능 일부 오동작, 우회 가능한 불편 | 잘못된 에러 분류 |
+| Trivial | 표기·문서 오류 | 오타 |
+
+예:
+
+```text
+Severity: Critical
+Priority: High
+```
+
+또는:
+
+```text
+Severity: Minor
+Priority: Medium
+```
+
+---
+
+# 10. High 제한
+
+동시에 진행하는 High 작업은 제품군 전체에서 최대 3개를 권장한다.
+
+High가 지나치게 많다면 모든 문제가 긴급한 것이 아니라
+Priority 분류가 실패한 것으로 본다.
+
+새로운 High가 발견되면 기존 High의 우선순위를 다시 검토한다.
+
+**Critical 보안·개인정보·법률 사건은 이 WIP 제한보다 우선한다.** 실제 사고가
+났는데 슬롯이 찼다는 이유로 기다리는 일은 없다.
+
+---
+
+# 11. Issue Triage 정책
+
+세 저장소의 모든 Open Issue를 다음 중 하나로 분류한다.
+
+| 분류 | 의미 |
+|---|---|
+| KEEP | 실제 독립적인 미해결 문제 |
+| MERGE | 다른 Issue와 본질적으로 동일 |
+| CLOSE | 이미 해결됐거나 제품 방향에서 제외 |
+| SPLIT | 서로 독립적인 문제가 하나의 Issue에 섞임 |
+| DECISION | 코드 작업 전에 사람의 결정 필요 |
+| RESEARCH | 사실 확인 필요 |
+| BLOCKED | 외부 조건 때문에 진행 불가 |
+| EPIC | 여러 Issue를 묶는 목표 |
+
+---
+
+# 12. Issue 전수 감사
+
+각 Open Issue에서 확인한다.
+
+- [ ] 현재 main에서도 재현되는가?
+- [ ] 이미 다른 PR에서 해결되지 않았는가?
+- [ ] 후속 Issue가 존재하는가?
+- [ ] 중복 Issue가 있는가?
+- [ ] 제품 방향과 아직 관련 있는가?
+- [ ] Acceptance Criteria가 있는가?
+- [ ] Verification Level이 있는가?
+- [ ] Priority가 적절한가?
+- [ ] 저장소가 맞는가?
+- [ ] cross-repo 문제인가?
+- [ ] 사람 결정이 먼저 필요한가?
+- [ ] 실제 사용자에게 영향이 있는가?
+
+결과:
+
+```text
+Repo | Issue | Classification | Priority | Epic | Action
+```
+
+감사는 다음 시점에 수행한다.
+
+- 분기마다 1회
+- 릴리스 직전
+- 대규모 제품 방향 변경 후
+
+---
+
+# 13. Agent의 Issue 생성 제한
+
+Agent는 문제를 발견했다고 자동으로 Issue를 만들지 않는다.
+안정화 기간에는 1.3절의 Issue 접수·중복 제거 기준을 먼저 적용한다. 기존 문제의
+미완료 항목이나 단순 후속 조사 결과는 **원본 Issue/PR에 추가**한다. 독립적인 새
+버그·보안 위험의 기록은 허용하며, 긴급한 위험 대응을 지연하지 않는다.
+
+기본 동작:
+
+```markdown
+## Follow-up Candidate
+
+Problem:
+
+Evidence:
+
+Impact:
+
+Suggested Scope:
+
+Blocks Current Work:
+Yes / No
+```
+
+현재 Issue 또는 PR에 기록한다.
+
+이후 triage에서 다음 중 하나로 결정한다.
+
+- Promote to Issue
+- Merge with existing
+- Research
+- Ignore
+
+---
+
+# 14. Agent가 독자적으로 하면 안 되는 것
+
+Agent는 다음을 단독으로 결정하지 않는다.
+
+- Priority를 High로 승격
+- Epic 생성
+- Stable 승격
+- Release scope 변경
+- 약관 최종 허용 판정
+- Security policy 변경
+- Branch protection 변경
+- Release 수행
+- Secret 접근 승인
+- 자신의 PR 최종 승인
+- 자신의 evidence를 신뢰 evidence로 승인
+- 자신의 Issue를 완료 판단하여 close.
+  **Required Verification 이 PR 에서 이미 충족된 가벼운 이슈(R0)는 워크플로 자동화가
+  close 할 수 있다.** 그 판단을 에이전트가 직접 하지는 않는다 — 자동화는 조건을
+  기계적으로 확인하고, 에이전트는 자기 작업의 완료를 선언하지 않는다.
+- Review Level 하향
+
+## 14.1 무거운 변경(R3)은 작성자가 아닌 사람의 승인이 있어야 머지된다 — 2026-10-01 개정
+
+`review:R3` 라벨이 붙은 PR 은 **작성자가 아닌 사람의 승인(APPROVED)이 하나 이상**
+있어야 머지된다. 오너 결정(kpubdata-builder#905, 2026-10-01)이고, 강제 장치는
+`R3 review` required check 다(kpubdata#722). Branch protection 의 승인 수는 0 으로
+두므로 그 라벨이 없는 PR 은 영향이 없다.
+
+- 판정 로직은 하나다: `scripts/r3_review.py` 와 `.github/actions/r3-review` (kpubdata).
+  네 저장소가 `@main` 으로 같은 액션을 부른다.
+- **판정 코드는 PR 의 것이 아니라 기준 브랜치의 것을 쓴다(#861).** kpubdata 의
+  `r3-review.yml` 은 `github.event.pull_request.base.sha` 를 체크아웃한다. PR 의 merge
+  commit 을 체크아웃하면 판정받는 PR 이 `scripts/r3_review.py` 와 액션을 고쳐 스스로를
+  통과시킬 수 있다. 다른 저장소는 액션을 고정 커밋으로 원격 참조하므로 같은 성질을
+  이미 가진다. 판정 로직을 고치는 PR 은 머지된 뒤부터 그 로직으로 판정된다.
+- **남아 있는 구멍: 워크플로 파일 자체.** `pull_request` 와 `pull_request_review` 는
+  PR 쪽의 워크플로 정의로 돈다. PR 이 `r3-review.yml` 의 단계를 지우거나 job 에
+  `if: false` 를 넣으면 그 PR 안에서 check 가 통과하거나 건너뛰어지고, branch
+  protection 은 건너뛴 check 를 통과로 읽는다. 저장소 안의 코드로는 막을 수 없다.
+  막는 방법 셋과 지금 쓰지 않는 이유:
+  - 조직 ruleset 의 필수 워크플로(기준 브랜치의 정의로 돈다) — 조직 ruleset 은 GitHub
+    Team 이상에서만 만들 수 있고, 이 조직은 Free 다(2026-10-11,
+    `gh api orgs/kpubdata-lab --jq .plan.name` → `free`).
+  - `pull_request_target` — 기준 브랜치의 정의로 돌지만 리뷰 이벤트에는 대응하는
+    것이 없어, 승인·dismiss 때의 재판정은 여전히 PR 의 정의로 돈다.
+  - check 를 게시하는 GitHub App — 호스팅하고 관리할 서비스가 하나 생긴다.
+
+  그래서 지금의 방어는 사람의 눈이다: `.github/workflows/` 를 고치는 PR 은 diff 에
+  드러나고 CODEOWNERS 가 소유자를 리뷰어로 부른다. 리뷰어는 `r3-review.yml` 이 바뀐
+  PR 에서 `R3 review` 가 **실행되어 통과했는지**(건너뜀이 아닌지) 확인한다. 조직이
+  Team 이상이 되면 필수 워크플로로 옮긴다.
+- check 는 **모든 PR 에서 돌고, `review:R3` 라벨이 없으면 통과한다.** 일부 PR 에서만 생기는
+  required check 는 그 PR 을 영원히 BLOCKED 로 둔다(18.2절).
+- 라벨 변경(`labeled`/`unlabeled`), push(`synchronize`), 리뷰 제출·dismiss 때마다
+  다시 판정한다.
+- 승인으로 세는 것: 리뷰어마다 마지막 APPROVED·CHANGES_REQUESTED·DISMISSED 리뷰가
+  APPROVED 인 경우. COMMENTED 는 상태를 바꾸지 않는다. 이전 head 에 준 승인도 센다 —
+  branch protection 의 "dismiss stale approvals" 가 꺼져 있는 것과 맞춘다.
+- 세지 않는 것: 작성자 본인, 봇 계정(사람 리뷰가 아니다), 저장소 쓰기 권한이 없는
+  계정 — 공개 저장소에서는 누구나 APPROVED 를 남길 수 있다.
+- **쓰기 권한은 조회해서 확인한다(#860).** 리뷰의 `author_association`
+  (`OWNER`·`MEMBER`·`COLLABORATOR`)은 계정과 저장소의 관계이지 권한이 아니다 — 조직
+  구성원이나 협력자가 읽기·분류(triage) 권한만 가질 수 있다. 그래서 association 이 맞는
+  승인자마다 `GET /repos/{owner}/{repo}/collaborators/{login}/permission` 을 조회해
+  `admin` 또는 `write` 일 때만 센다(이 필드에서 `maintain` 은 `write`, `triage` 는
+  `read` 로 온다). **조회에 실패한 계정의 승인은 세지 않는다.** 한 계정의 조회 실패가
+  다른 승인자의 리뷰를 가리지는 않는다.
+- **권한은 승인한 때가 아니라 check 가 도는 때의 것이다.** 승인한 뒤 쓰기 권한을 잃은
+  사람의 승인은 다음 판정부터 세지 않는다. 다만 권한 변경은 check 를 다시 돌리는
+  이벤트가 아니므로, push·라벨 변경·리뷰로 다시 돌기 전까지는 앞선 결과가 남는다.
+  권한을 회수한 뒤 열려 있는 `review:R3` PR 이 있으면 check 를 다시 돌린다.
+- 라벨을 떼면 check 는 통과한다. 그래서 `review:R3` 를 낮은 수준으로 바꾸는 것은 여전히 사람만 한다(위 목록).
+- 이벤트마다 별도 실행(check suite)이 생기고, branch protection 은 한 suite 에서 실패한
+  check 를 다른 suite 가 통과해도 실패로 본다. 그래서 승인으로 돈 실행이 통과하면 같은
+  head 의 앞선 실패 실행을 `required-check-refresh.yml` 이 다시 돌린다(#759). 다시 도는
+  실행도 라벨·리뷰를 실시간으로 읽는다.
+
+## 14.2 PR 제목 검사가 머지를 막는다 — 2026-10-01
+
+`PR title` 이 네 저장소 branch protection 의 required check 다(kpubdata#741).
+그 전까지 titles.yml 은 빨간 X 만 보여줬다 — 병합 버튼은 열려 있었고, 규칙이
+지켜지던 건 사람 기억 덕분이었다.
+
+- 판정 로직은 하나다: `scripts/conventional_title.py` (kpubdata). 네 저장소가
+  `@main` 액션으로 같은 검사를 부른다(§14.1 과 같은 구조).
+- check 는 모든 PR 에서 돈다 — 열기·제목 수정(`edited`)·재오픈·push 마다. 제목
+  수정은 ci.yml 을 다시 돌리지 않으므로, 검사를 CI gate 의 needs 에 넣는 대신
+  required check 로 등록했다. 제목을 고치면 titles.yml 만 재실행되고 그 결과가
+  머지를 통제한다.
+- 거부하는 제목: 형식 위반(`type(scope): description`), 허용 밖 type, 줄바꿈,
+  끝의 `(#N)`(#699), 제목 어디에든 있는 한글·`#N`(#742). `Revert "..."` 는
+  예외다 — 되돌리기가 검사에 막혀선 안 된다.
+- 이슈는 실패하지 않는다: invalid 이슈 제목은 `type:*` 라벨링을 건너뛸 뿐이다.
+- required 목록은 `scripts/check_required_checks.py` 로 검증한다(studio#416 —
+  존재하지 않는 체크를 required 로 두면 모든 PR 이 영원히 BLOCKED 다).
+- release PR 제목(`chore(release): ...`)과 revert 제목은 형식에 맞으므로
+  막히지 않는다.
+
+---
+
+# 15. Issue Lifecycle
+
+```text
+Triage
+   ↓
+Ready
+   ↓
+In Progress
+   ↓
+In Review
+   ↓
+Verifying
+   ↓
+Done
+```
+
+**`Merged` 는 Project 상태가 아니다.** 병합은 사건이고 상태가 아니며, 상태로
+두면 16절("Merged != Done")이 상태 이름으로 부정된다. PR 이 병합되면
+`In Review → Verifying` 으로 넘어간다.
+
+보조 상태:
+
+```text
+Blocked
+Needs Human
+Deferred
+```
+
+## 15.1 상태 전이 책임
+
+| 전이 | 누가 |
+|---|---|
+| Triage → Ready | 사람 |
+| Ready → In Progress | 구현자 |
+| In Progress → In Review | 구현자 |
+| In Review → Verifying | PR 병합 시. 병합 자체는 사람 |
+| Verifying 진행 | CI 또는 지정된 사람 |
+| Verifying → Done | 사람 |
+| 같은 지점 3회 실패 | Needs Human 전환 |
+
+같은 지점에서 3회 실패하면 구현자는 작업을 계속 반복하지 않는다.
+
+다음을 남긴다.
+
+```markdown
+## Needs Human
+
+Failed Stage:
+
+Attempts:
+
+Observed Behavior:
+
+Evidence:
+
+What Was Tried:
+
+Decision Needed:
+```
+
+---
+
+# 16. Merged != Done
+
+PR merge는 Issue 완료가 아니다.
+
+Issue를 Done으로 만들려면:
+
+- [ ] 코드가 merge됐다.
+- [ ] Acceptance Criteria가 충족됐다.
+- [ ] Required Verification을 신뢰 evidence로 통과했다.
+- [ ] 필요한 문서가 업데이트됐다.
+- [ ] cross-repo 영향이 확인됐다.
+- [ ] release artifact 검증이 필요한 경우 완료됐다.
+
+그 후 사람이 Issue를 close한다.
+
+---
+
+# 17. 후속 Issue 정책
+
+원 Issue의 Acceptance Criteria가 충족되지 않았다면
+후속 Issue를 만들어 원 Issue를 닫지 않는다.
+
+원 Issue를 유지한다.
+
+별개의 개선사항일 때만 후속 Issue로 분리한다.
+
+예:
+
+```text
+Bug
+ ↓
+원래 문제 해결
+ ↓
+Issue Done
+
+추가 normalization 개선
+ ↓
+Follow-up Issue
+```
+
+---
+
+# 18. Verification Level
+
+모든 Issue에는 Required Verification을 지정한다.
+
+<!-- plain-codes: off -->
+| Level | 내용 | 신뢰 evidence 생성 위치 |
+|---|---|---|
+| V0 — Static | lint, typecheck, schema validation | CI |
+| V1 — Unit | 단위 테스트 | CI |
+| V2 — Replay / Contract | fixture/replay 기반 계약 테스트 | CI |
+| V3 — Component Integration | 실제 component 간 통합 | CI |
+| V4 — Live Provider | 실제 provider API 호출 | 국내 runner CI + CI secret |
+| V5-replay — Product E2E | Studio → Builder → kpubdata → replay provider → Artifact | CI |
+| V5-live — Product E2E | Studio → Builder → kpubdata → 실제 Provider → Artifact | 국내 runner CI |
+<!-- plain-codes: on -->
+
+PR에서는 replay provider 로 도는 제품 E2E(V5-replay)를 사용할 수 있다.
+
+실제 provider 로 도는 제품 E2E(V5-live)는 실제 Provider가 필요한 release 수준 검증에 사용한다.
+
+## 18.1 변경 유형별 기본 요구
+
+<!-- plain-codes: off -->
+| 변경 유형 | Review | Required Verification |
+|---|---|---|
+| 오타·링크·포맷·생성 파일 | R0 | V0 |
+| 일반 버그 수정·작은 기능 | R1 | V1 이상 |
+| public API, builder API, OpenAPI | R2 | V2 + V3 |
+| spec 추가·수정 | R2 | V2 + V4 |
+| dataset transformation | R2 | V2 + V3, 영향 데이터셋 V4 |
+| BYOK·auth·cache isolation | R3 | V3 + 부정 테스트 + leakage test |
+| publish policy·PII | R3 | V3 + 부정 테스트 |
+| workflow·CI evidence | R3 | V3 이상 |
+| release | R3 | V5-live |
+<!-- plain-codes: on -->
+
+표보다 높은 수준을 요구하는 것은 자유다.
+
+낮추려면 사람의 승인과 사유 기록이 필요하다.
+
+---
+
+# 18.2 확인은 기계가 한다 — 2026-09-27 추가
+
+[VERIFICATION.md](VERIFICATION.md) 가 정본이다. 요지는 하나다.
+
+> **확인할 수 있는 것을 확인하지 않고 단정하지 않는다. 그리고 확인을 사람의 조심함에
+> 맡기지 않는다.**
+
+2026-09-27 하루에 같은 형태의 실수가 여섯 번 났고, **막힌 것은 전부 기계가 막았고
+빠져나간 것은 전부 기계가 없던 자리였다.** 조심함의 차이가 아니었다.
+
+그래서 새 규칙을 정할 때 셋을 같이 만든다.
+
+1. 규칙을 검사하는 명령
+2. 그 명령을 CI 에 연결
+3. **그 명령이 실패하는 것을 보여주는 테스트**
+
+세 번째가 빠지면 작동하는지 아무도 모른다. `AGENTS.md` 는 처음부터 "주석은 영어" 라고
+적고 있었고, 그 사이에 한국어 주석이 9,298건 쌓였다.
+
+기존 부채는 **래칫**으로 동결한다 — 파일별 현재 건수를 baseline 에 두고 늘어날 때만
+실패한다. 전부 고치고 시작하려면 아무것도 시작되지 않는다.
+
+# 19. Verification 규칙
+
+Issue:
+
+```text
+Required Verification: V4
+```
+
+> **19절은 여기서 끊겨 있다.** 전달받은 원문이 `PR:` 예시 블록 직전에서
+> 끝났다. 아래 20~34절도 아직 전달되지 않았다.
+
+---
+
+# 20~34. 미수신 구간
+
+이 문서는 **아직 완성본이 아니다.** 0~19절만 전달받았고, 20절 이후는 비어 있다.
+앞 절이 이미 참조하고 있는데 본문이 없는 것은 다음 세 개다.
+
+| 참조 위치 | 가리키는 절 | 내용 |
+|---|---|---|
+| 0절, 2.1절 | **25절** | 리뷰 수준(R0~R3) 정의 |
+| 2.1절 | **33절** | Target Release |
+| 1.2절, 5절(EPIC-A) | **34절** | Stable 정의 |
+
+그동안 이 세 가지는 다음과 같이 읽는다 — 20~34절이 도착하면 이 절은 통째로
+교체한다.
+
+- **리뷰 수준(R0~R3)**: 18.1절의 변경 유형 표가 사실상의 기준이다. 가장 무거운 수준(R3)은 사람 리뷰가
+  반드시 필요한 등급이고, 이 문서를 바꾸는 변경이 여기 해당한다(0절).
+  작성자가 아닌 사람의 승인이 없으면 `R3 review` check 가 머지를 막는다(14.1절).
+- **Target Release**: GitHub Project 필드로만 관리하고 사람이 설정한다(2.1절).
+  값은 버전이 아니라 릴리스의 달(`YYYY-MM`)이다 — builder·studio 는 그 달의 월간
+  창, kpubdata 는 그 달 안의 수시 릴리스(7일 간격)다. 규칙과 게이트는
+  [compatibility.md 5.1절](../compatibility.md#release-cadence)에 있다.
+- **Stable**: 증거 기반 지원 대상(1.2절). 승격 결정은 사람이 한다(14절).
+
+이 구간이 채워지기 전까지 리뷰 수준(R0~R3) 라벨의 자동 부여 규칙(2.1절)은 구현하지 않는다.
+기준이 없는 상태로 자동화하면 라벨이 틀린 채로 쌓인다.
+
+## 백로그 부록 A 중 아직 반영하지 못한 것
+
+2026-09-26 백로그의 부록 A 는 POLICY 11곳을 고치라고 한다. **그중 7곳은
+반영했고 4곳은 미수신 구간이라 반영할 수 없다.**
+
+| 절 | 수정 내용 | 상태 |
+|---|---|---|
+| 1.2 | 키 비저장 적용 범위(라이브러리·CLI 는 환경변수 허용) | ✅ 반영 |
+| 2.1 | Blocked·Needs Human 은 Status 필드로만 | ✅ 반영 |
+| 8 | P0/P1/P2 는 치환이 아니라 원점 재판정 | ✅ 반영 |
+| 10 | Critical 보안·개인정보·법률은 WIP 제한보다 우선 | ✅ 반영 |
+| 14 | 가벼운 이슈(R0)는 워크플로 자동화가 close 가능, 에이전트는 불가 | ✅ 반영 |
+| 15 | Project 상태에서 `Merged` 제거 | ✅ 반영 |
+| 15.1 | 병합 시 `In Review → Verifying` | ✅ 반영 |
+| **25** | spec `base_url` 호스트 변경은 무거운 리뷰 수준(R3)으로 자동 승격 | ❌ 절 자체가 없다 |
+| **31** | 신뢰 recorder 의 호스트 허용 목록 검사, DNS rebinding | ❌ 절 자체가 없다 |
+| **34** | 등급 표를 축 분리 모델로 교체, `user_access` 제외 | ❌ 절 자체가 없다 |
+| **35** | 규칙을 설정으로 강제 | ❌ 절 자체가 없다 |
+| **37** | 원점 재판정 | ❌ 절 자체가 없다 |
+
+미반영 4개 중 **25절과 31절은 열려 있는 보안 이슈와 직접 연결된다** —
+`base_url` 호스트를 검사하지 않고 provider 키를 전송하는 경로가 실제로
+있다(#519). 그 이슈는 이 문서와 무관하게 진행하지만, 무거운 리뷰 수준(R3)으로의 자동 승격 규칙은
+25절이 도착해야 쓸 수 있다.
